@@ -1,0 +1,25 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
+		 xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+	<f:entry title="Jobs (comma separated)" field="jobs">
+		<f:textbox/>
+	</f:entry>
+	<f:entry title="Count" field="count">
+		<f:textbox/>
+	</f:entry>
+	<f:entry title="Description Pattern" field="descriptionPattern">
+		<f:textbox/>
+	</f:entry>
+	<f:entry title="Description Pattern Group" field="descriptionPatternGroup">
+		<f:textbox/>
+	</f:entry>
+	<f:entry title="Status Image Size" field="orbSize">
+		<select name="_.orbSize">
+			<option value="${it.orbSize}">Current (${it.orbSize}x${it.orbSize})</option>
+			<option value="8">8x8</option>
+			<option value="16">16x16</option>
+			<option value="24">24x24</option>
+			<option value="32">32x32</option>
+			<option value="48">48x48</option>
+		</select>
+	</f:entry>
+</j:jelly>

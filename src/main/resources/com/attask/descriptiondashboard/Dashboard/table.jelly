@@ -1,0 +1,43 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
+		 xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+	<html>
+		<head>
+			<link rel="stylesheet" type="text/css" href="${rootURL}/plugin/DescriptionDashboard/styles/main.css"/>
+			<link rel="stylesheet" type="text/css" href="${rootURL}/static/c67292fb/scripts/yui/assets/skins/sam/skin.css"/>
+			<link rel="stylesheet" type="text/css" href="${rootURL}/static/c67292fb/css/style.css"/>
+			<style>
+				img.status {
+				width: ${it.orbSize}px;
+				height: ${it.orbSize}px;
+				}
+
+				.SUCCESS img.status {
+				background-image: url('${rootURL}/static/432ed95f/images/48x48/blue.png');
+				}
+
+				.UNSTABLE img.status {
+				background-image: url('${rootURL}/static/432ed95f/images/48x48/yellow.png');
+				}
+
+				.FAILURE img.status {
+				background-image: url('${rootURL}/static/432ed95f/images/48x48/red.png');
+				}
+
+				.NOT_BUILT img.status {
+				background-image: url('${rootURL}/static/432ed95f/images/48x48/grey.png');
+				}
+
+				.ABORTED img.status {
+				background-image: url('${rootURL}/static/432ed95f/images/48x48/grey.png');
+				}
+
+				.RUNNING img.status {
+				background-image: url('${rootURL}/static/432ed95f/images/48x48/grey.png');
+				}
+			</style>
+		</head>
+		<body>
+			<st:include it="${it.getTable()}" page="render.jelly"/>
+		</body>
+	</html>
+</j:jelly>

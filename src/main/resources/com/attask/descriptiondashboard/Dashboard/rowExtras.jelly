@@ -1,0 +1,9 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
+		 xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+	<j:set var="requestId" value="${request.getParameter('id').replace('row-', '')}"/>
+	<j:forEach var="row" items="${it.table.rows}">
+		<j:if test="${row.id.equals(requestId)}">
+			<st:include it="${row}" page="extras.jelly" />
+		</j:if>
+	</j:forEach>
+</j:jelly>

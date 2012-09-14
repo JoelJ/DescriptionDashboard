@@ -1,0 +1,71 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
+		 xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+	<j:set var="table" value="${it.getTable()}"/>
+
+	<style>
+		.hasLastSuccess tr:nth-child(2) .details .description:before {
+			content: "Last Success: ${table.findPassedRow().findDatePretty()} ago";
+			display: block;
+			font-size: 10px;
+			font-weight: bolder;
+		}
+
+		.row.${it.findUserId()},
+		.row.${it.findUserName()} {
+			background-color: #FEFEB2;
+		}
+
+		.row.${it.findUserId()}:hover,
+		.row.${it.findUserName()}:hover {
+			background-color: #FEFE65;
+		}
+
+		img.status {
+			width: ${it.orbSize}px;
+			height: ${it.orbSize}px;
+		}
+
+		.SUCCESS img.status {
+			background-image: url('${rootURL}/static/432ed95f/images/48x48/blue.png');
+		}
+
+		.UNSTABLE img.status {
+			background-image: url('${rootURL}/static/432ed95f/images/48x48/yellow.png');
+		}
+
+		.FAILURE img.status {
+			background-image: url('${rootURL}/static/432ed95f/images/48x48/red.png');
+		}
+
+		.NOT_BUILT img.status {
+			background-image: url('${rootURL}/static/432ed95f/images/48x48/grey.png');
+		}
+
+		.ABORTED img.status {
+			background-image: url('${rootURL}/static/432ed95f/images/48x48/grey.png');
+		}
+
+		.RUNNING img.status {
+			background-image: url('${rootURL}/static/432ed95f/images/48x48/grey.png');
+		}
+
+		.easyBuild img {
+			background-image: url('${rootURL}/static/432ed95f/images/16x16/clock.png');
+			margin-left: 3px;
+			top: 0px;
+			width: 10px;
+			height: 10px;
+		}
+	</style>
+	<link rel="stylesheet" type="text/css" href="${rootURL}/plugin/DescriptionDashboard/styles/main.css"/>
+
+	<j:set var="views" value="${it.owner.views}"/>
+	<j:set var="currentView" value="${it}"/>
+	<st:include page="viewTabs.jelly" it="${it.owner.viewsTabBar}"/>
+	<div id="DescriptionDashboard">
+		<st:include it="${table}" page="render.jelly" />
+	</div>
+
+	<script src="${rootURL}/plugin/DescriptionDashboard/scripts/main.js"><!--empty--></script>
+	<script>DescriptionDashboard.init()</script>
+</j:jelly>

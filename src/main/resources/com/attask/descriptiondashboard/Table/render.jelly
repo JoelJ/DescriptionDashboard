@@ -1,0 +1,26 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
+		 xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+	<j:set var="lastSuccess" value="${it.findPassedRow()}"/>
+	<table class="pane bigtable ${lastSuccess == null ? '' : 'hasLastSuccess'}">
+		<tr>
+			<th id="details">Details</th>
+			<j:forEach var="header" items="${it.headers}">
+				<th>
+					<a href="./job/${header.name}">${header.alias}</a>
+					<a class="easyBuild" href="./job/${header.name}/build?delay=0sec">
+						<img src="${rootURL}/plugin/DescriptionDashboard/images/transparent.png" />
+					</a>
+				</th>
+			</j:forEach>
+		</tr>
+
+		<j:set var="passedRow" value="${lastSuccess}"/>
+		<j:if test="${passedRow != null}">
+			<st:include it="${passedRow}" page="render.jelly" />
+		</j:if>
+
+		<j:forEach var="row" items="${it.rows}">
+			<st:include it="${row}" page="render.jelly" />
+		</j:forEach>
+	</table>
+</j:jelly>

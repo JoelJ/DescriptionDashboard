@@ -1,0 +1,87 @@
+.extra-details {
+	width: 100%
+}
+
+.extra-details:hover {
+	background-color: transparent !important;
+}
+
+.extra-details.hidden {
+	display: none;
+}
+
+th#details {
+	width: 1px;
+}
+
+td.not-started,
+td.cell {
+	text-align: center;
+}
+
+tr.passed {
+	background-color: #CFC !important;
+}
+
+tr.passed:hover {
+	background-color: #BEB !important;
+}
+
+
+.hasLastSuccess tr:nth-child(2) {
+	/*background-color: red !important;*/
+	border-style: double;
+	border-bottom-width: 3px;
+}
+
+tr.selected {
+	background-image: -webkit-linear-gradient(left, #ffd8d8 0%, #ffffff 50%, #ffd8d8 100%);
+	background-image: -moz-linear-gradient(left, #ffd8d8 0%, #ffffff 50%, #ffd8d8 100%);
+}
+
+tr.selected:hover {
+	background-image: -webkit-linear-gradient(left, #ffb0b0 0%, #fee 50%, #ffb0b0 100%);
+	background-image: -moz-linear-gradient(left, #ffb0b0 0%, #fee 50%, #ffb0b0 100%);
+}
+
+img {
+	background-repeat: no-repeat;
+	background-size: 100%;
+}
+
+.running img.status {
+	-webkit-animation: pulse 1s infinite normal;
+	-moz-animation: pulseFF 1s infinite normal;
+}
+
+.details .date {
+	font-size: .75em;
+}
+
+@-moz-keyframes pulseFF {
+      0% {opacity: 0.2;}
+     10% {opacity: 0.4;}
+     20% {opacity: 0.7;}
+     30% {opacity: 0.8;}
+     40% {opacity: 0.9;}
+     50% {opacity: 1.0;}
+     60% {opacity: 0.9;}
+     70% {opacity: 0.8;}
+     80% {opacity: 0.7;}
+     90% {opacity: 0.4;}
+    100% {opacity: 0.2;}
+}
+
+@-webkit-keyframes pulse {
+      0% {opacity: 0.2;}
+     10% {opacity: 0.4;}
+     20% {opacity: 0.7;}
+     30% {opacity: 0.8;}
+     40% {opacity: 0.9;}
+     50% {opacity: 1.0;}
+     60% {opacity: 0.9;}
+     70% {opacity: 0.8;}
+     80% {opacity: 0.7;}
+     90% {opacity: 0.4;}
+    100% {opacity: 0.2;}
+}

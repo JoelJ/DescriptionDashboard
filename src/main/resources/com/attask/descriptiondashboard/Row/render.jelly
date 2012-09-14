@@ -1,0 +1,30 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
+		 xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+	<j:set var="requestId" value="${request.getParameter('id').replace('row-', '')}"/>
+	<j:set var="same" value="${it.id.equals(requestId)}"/>
+	<tr id="row-${it.id}" class="row ${it.passed ? 'passed' : ''} ${it.findCommitters()} ${same ? 'expanded' : ''}">
+		<td class="details">
+			<div class="description">${it.description}</div>
+			<div class="date">${it.findDateFormatted()}</div>
+		</td>
+		<j:forEach var="header" items="${it.headers}">
+			<j:set var="cell" value="${it.getCell(header.name)}"/>
+			<j:if test="${cell != null}">
+				<st:include it="${it.getCell(header.name)}" page="render.jelly" />
+			</j:if>
+			<j:if test="${cell == null}">
+				<td class="not-started">?</td>
+			</j:if>
+		</j:forEach>
+	</tr>
+	<tr id="extra-${it.id}" class="extra-details ${same ? '' : 'hidden'}">
+		<td colspan="${it.headers.size() + 1}">
+			<j:if test="${same}">
+				<st:include it="${it}" page="extras.jelly" />
+			</j:if>
+			<j:if test="${!same}">
+				Loading<span class="loading">...</span>
+			</j:if>
+		</td>
+	</tr>
+</j:jelly>
