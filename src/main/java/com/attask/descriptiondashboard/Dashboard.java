@@ -36,6 +36,9 @@ public class Dashboard extends View {
 	private int orbSize;
 
 	private transient Pattern descriptionPatternRegex;
+	private transient Table table;
+	private transient long tableCreateTime = -1;
+	private transient static final long CACHE_TIME = 5000; // 5 seconds
 
 	@DataBoundConstructor
 	public Dashboard(String name) {
@@ -49,8 +52,23 @@ public class Dashboard extends View {
 	}
 
 	public Table getTable(int count) {
-		Map<String, Map<String, Cell>> cellMap = generateCellMap(count + 10);// Add 10 to help prevent the bottom from being jagged
-		return Table.createFromCellMap(count, this.jobs, cellMap);
+		if(this.count != count) {
+			//don't use the cache and don't update the cache if the request is a custom size
+			return generateTable(count, this.jobs);
+		}
+
+		Date startTime = new Date();
+		long time = startTime.getTime();
+		if(table == null || tableCreateTime < 0 || tableCreateTime + CACHE_TIME <= time) {
+			tableCreateTime = time;
+			table = generateTable(count, this.jobs);
+		}
+		return table;
+	}
+
+	private Table generateTable(int count, List<Header> jobs) {
+		Map<String, Map<String, Cell>> cellMap = generateCellMap(count + 10); // Add 10 to help prevent the bottom from being jagged
+		return Table.createFromCellMap(count, jobs, cellMap);
 	}
 
 	@WebMethod(name = "json")

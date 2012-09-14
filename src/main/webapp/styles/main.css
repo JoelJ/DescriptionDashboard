@@ -19,11 +19,11 @@ td.cell {
 	text-align: center;
 }
 
-tr.passed {
+.row.passed {
 	background-color: #CFC !important;
 }
 
-tr.passed:hover {
+.row.passed:hover {
 	background-color: #BEB !important;
 }
 
