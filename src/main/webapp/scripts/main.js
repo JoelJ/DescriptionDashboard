@@ -1,5 +1,6 @@
 var DescriptionDashboard = {
 	init: function() {
+		DescriptionDashboard.hackGreenRow();
 		setTimeout(DescriptionDashboard.enableAutoRefresh, 10000);
 		Event.observe(window, 'hashchange', DescriptionDashboard.onHashChange);
 		if(DescriptionDashboard.toggleRowSelect(document.URL, true)) {
@@ -34,6 +35,7 @@ var DescriptionDashboard = {
 		$$('.row').each(function(it) {
 			it.observe('click', DescriptionDashboard.onRowClick);
 		});
+		DescriptionDashboard.hackGreenRow();
 
 		DescriptionDashboard.toggleRowSelect(document.URL, true);
 		setTimeout(DescriptionDashboard.enableAutoRefresh, 10000);
@@ -108,5 +110,16 @@ var DescriptionDashboard = {
 			it.removeClassName('expanded');
 			itExtra.addClassName('hidden');
 		});
+	},
+
+	hackGreenRow:function () {
+		var lastSuccessfulRow = $$('.hasLastSuccess tr:nth-child(2)');
+		if (lastSuccessfulRow.length > 0) {
+			lastSuccessfulRow[0].id = "";
+			lastSuccessfulRow[0].removeClassName('expanded');
+
+			var lastSuccessfulRowExtra = $$('.hasLastSuccess tr:nth-child(3)');
+			lastSuccessfulRowExtra[0].id = "";
+		}
 	}
 };

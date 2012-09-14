@@ -27,11 +27,20 @@ tr.passed:hover {
 	background-color: #BEB !important;
 }
 
+.row.expanded,
+.row.expanded:hover {
+	background-color: lightgray;
+}
+
 
 .hasLastSuccess tr:nth-child(2) {
 	/*background-color: red !important;*/
 	border-style: double;
 	border-bottom-width: 3px;
+}
+
+.hasLastSuccess tr:nth-child(3) {
+	display: none;
 }
 
 tr.selected {
