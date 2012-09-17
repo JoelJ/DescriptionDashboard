@@ -1,5 +1,11 @@
 .extra-details {
-	width: 100%
+	width: 100%;
+}
+.extra-details td {
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 5px;
+	padding-bottom: 5px;
 }
 
 .extra-details:hover {
@@ -29,7 +35,8 @@ td.cell {
 
 .row.expanded,
 .row.expanded:hover {
-	background-color: lightgray;
+	background-color: #F0F0F0;
+	font-weight: bold;
 }
 
 

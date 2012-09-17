@@ -1,8 +1,13 @@
 var DescriptionDashboard = {
 	init: function() {
 		DescriptionDashboard.hackGreenRow();
-		setTimeout(DescriptionDashboard.enableAutoRefresh, 10000);
+
+		if(window.location.search.indexOf('disableAutoRefresh=true') == -1) {
+			DescriptionDashboard.refreshHandle = setTimeout(DescriptionDashboard.enableAutoRefresh, 10000);
+		}
+
 		Event.observe(window, 'hashchange', DescriptionDashboard.onHashChange);
+
 		if(DescriptionDashboard.toggleRowSelect(document.URL, true)) {
 			window.scrollBy(0,-50);
 		}
@@ -10,6 +15,17 @@ var DescriptionDashboard = {
 		$$('.row').each(function(it) {
 			it.observe('click', DescriptionDashboard.onRowClick);
 		});
+	},
+
+	forceRefresh: function() {
+		DescriptionDashboard.killRefresh();
+		DescriptionDashboard.enableAutoRefresh();
+	},
+
+	killRefresh: function() {
+		if(DescriptionDashboard.refreshHandle) {
+			clearTimeout(DescriptionDashboard.refreshHandle);
+		}
 	},
 
 	enableAutoRefresh: function() {
@@ -38,7 +54,7 @@ var DescriptionDashboard = {
 		DescriptionDashboard.hackGreenRow();
 
 		DescriptionDashboard.toggleRowSelect(document.URL, true);
-		setTimeout(DescriptionDashboard.enableAutoRefresh, 10000);
+		DescriptionDashboard.refreshHandle = setTimeout(DescriptionDashboard.enableAutoRefresh, 10000);
 	},
 
 	onUpdateError: function(transport) {
@@ -79,6 +95,9 @@ var DescriptionDashboard = {
 		var rowId = row.id;
 		var extraId = rowId.replace("row-", "extra-");
 		var extra = $(extraId);
+		if(extra == null) {
+			return;
+		}
 
 		var currentlyExpanded = $$('.row.expanded');
 
