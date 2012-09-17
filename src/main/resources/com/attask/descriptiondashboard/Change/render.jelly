@@ -1,0 +1,18 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
+		 xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+	<dl id="change-${it.revision}" class="change">
+		<dt>Revision</dt><dd class="revision">${it.revision}</dd>
+		<dt>Author</dt><dd class="author">${it.author.fullName}</dd>
+		<dt>Date/Time</dt><dd class="timestamp" value="${it.timestamp}">${it.findTimestampFormatted()}</dd>
+		<dt>Comment</dt><dd class="comment"><pre>${it.comment}</pre></dd>
+		<dt>Files affected</dt>
+		<dd>
+			<ul class="changedFiles">
+				<j:forEach var="file" items="${it.changedFiles}">
+					<li class="file">${file}</li>
+				</j:forEach>
+			</ul>
+		</dd>
+	</dl>
+</j:jelly>

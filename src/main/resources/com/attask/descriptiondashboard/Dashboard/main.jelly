@@ -10,19 +10,31 @@
 			font-weight: bolder;
 		}
 
-		.row.${it.findUserId()},
-		.row.${it.findUserName()} {
+		.row[class~='${it.findUserId()}'],
+		.row[class~='${it.findUserName()}'] {
 			background-color: #FEFEB2;
 		}
 
-		.row.${it.findUserId()}:hover,
-		.row.${it.findUserName()}:hover {
+		.row[class~='${it.findUserId()}']:hover,
+		.row[class~='${it.findUserName()}']:hover {
 			background-color: #FEFE65;
+		}
+
+		.row.expanded[class~='${it.findUserId()}'],
+		.row.expanded[class~='${it.findUserId()}']:hover {
+			background-color: #FEFE65 !important;
 		}
 
 		img.status {
 			width: ${it.orbSize}px;
 			height: ${it.orbSize}px;
+		}
+
+		img.multipleCommitters {
+			max-width: 24px;
+			height: 100%;
+			float: left;
+			background-image: url('${rootURL}/static/432ed95f/images/48x48/user.png');
 		}
 
 		.SUCCESS img.status {

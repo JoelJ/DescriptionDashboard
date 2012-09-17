@@ -1,6 +1,8 @@
 package com.attask.descriptiondashboard;
 
 import hudson.Util;
+import hudson.model.Project;
+import hudson.model.Run;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
 
@@ -108,6 +110,15 @@ public class Row implements Serializable {
 		return true;
 	}
 
+	public int findNumberCommitters() {
+		Iterator<Header> iterator = headers.iterator();
+		if(iterator.hasNext()) {
+			Cell cell = cells.get(iterator.next().getName());
+			return cell.getNumberCommitters();
+		}
+		return 0;
+	}
+
 	/**
 	 * Used from Row/render.jelly. Added to the class so we can style rows based on committer.
 	 * @return HTML-safe set of the names and IDs of everyone who contributed to all the builds in the entire row.
@@ -122,6 +133,23 @@ public class Row implements Serializable {
 			}
 		}
 		return StringUtils.join(result, " ");
+	}
+
+	public List<Change> findChangeSet() {
+		List<Change> allChanges = new LinkedList<Change>();
+		for (Cell cell : cells.values()) {
+			String projectName = cell.getProjectName();
+			int buildNumber = cell.getBuildNumber();
+			Project project = ProjectUtils.findProject(projectName);
+			if(project != null) {
+				Run buildByNumber = project.getBuildByNumber(buildNumber);
+				if(buildByNumber != null) {
+					List<Change> changeSet = ProjectUtils.findChangeSet(buildByNumber);
+					allChanges.addAll(changeSet);
+				}
+			}
+		}
+		return Collections.unmodifiableList(allChanges);
 	}
 
 	@Override
