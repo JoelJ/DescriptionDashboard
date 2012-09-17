@@ -26,6 +26,7 @@ public class Cell implements Serializable {
 	private final int buildNumber;
 	private final boolean running;
 	private final Set<String> committers;
+	private final int numberCommitters;
 
 	public static Cell createFromBuild(Run build) {
 		String description = build.getDescription();
@@ -35,10 +36,11 @@ public class Cell implements Serializable {
 		String resultString = result == null ? "RUNNING" : result.toString();
 		boolean running = build.isBuilding();
 		Set<String> committers = ProjectUtils.findCommitters(build);
-		return new Cell(name, failureCount, resultString, description, build.getTime(), build.getParent().getName(), build.getNumber(), running, committers);
+		int numberCommitters = ProjectUtils.findNumberCommitters(build);
+		return new Cell(name, failureCount, resultString, description, build.getTime(), build.getParent().getName(), build.getNumber(), running, committers, numberCommitters);
 	}
 
-	private Cell(String name, int failures, String result, String description, Date date, String projectName, int buildNumber, boolean running, Set<String> committers) {
+	private Cell(String name, int failures, String result, String description, Date date, String projectName, int buildNumber, boolean running, Set<String> committers, int numberCommitters) {
 		this.name = name;
 		this.failures = failures;
 		this.result = result;
@@ -48,6 +50,7 @@ public class Cell implements Serializable {
 		this.buildNumber = buildNumber;
 		this.running = running;
 		this.committers = committers;
+		this.numberCommitters = numberCommitters;
 	}
 
 	@Exported
@@ -93,5 +96,10 @@ public class Cell implements Serializable {
 	@Exported
 	public Set<String> getCommitters() {
 		return committers;
+	}
+
+	@Exported
+	public int getNumberCommitters() {
+		return numberCommitters;
 	}
 }

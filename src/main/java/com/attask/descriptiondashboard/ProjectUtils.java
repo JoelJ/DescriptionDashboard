@@ -1,6 +1,7 @@
 package com.attask.descriptiondashboard;
 
 import hudson.model.*;
+import hudson.plugins.git.GitChangeSet;
 import hudson.scm.ChangeLogSet;
 import hudson.tasks.test.AbstractTestResultAction;
 import jenkins.model.Jenkins;
@@ -56,5 +57,32 @@ public class ProjectUtils {
 		return Collections.unmodifiableSet(result);
 	}
 
+	public static int findNumberCommitters(Run build) {
+		Set<String> count = new HashSet<String>();
+		if(build instanceof AbstractBuild) {
+			ChangeLogSet changeSet = ((AbstractBuild) build).getChangeSet();
+			for (Object o : changeSet) {
+				ChangeLogSet.Entry change = (ChangeLogSet.Entry)o;
+				count.add(change.getAuthor().getId());
+			}
+		}
+		return count.size();
+	}
 
+	public static List<Change> findChangeSet(Run build) {
+		List<Change> changes = new LinkedList<Change>();
+		if(build instanceof AbstractBuild) {
+			for (Object changeObj : ((AbstractBuild)build).getChangeSet()) {
+				ChangeLogSet.Entry changeSet = (ChangeLogSet.Entry)changeObj;
+				Change change;
+				if(changeSet instanceof GitChangeSet) {
+					change = Change.createChangeFromGitChangeSet((GitChangeSet) changeSet);
+				} else {
+					change = Change.createChangeFromChangeSet(changeSet);
+				}
+				changes.add(change);
+			}
+		}
+		return Collections.unmodifiableList(changes);
+	}
 }
