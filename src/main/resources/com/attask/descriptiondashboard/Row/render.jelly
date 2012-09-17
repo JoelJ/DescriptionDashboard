@@ -1,7 +1,7 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
 		 xmlns:t="/lib/hudson" xmlns:f="/lib/form">
-	<j:set var="requestId" value="${request.getParameter('id').replace('row-', '')}"/>
-	<j:set var="same" value="${it.id.equals(requestId)}"/>
+	<j:set var="requestId" value="${request.getParameterValues('id')}"/>
+	<j:set var="same" value="${it.idEquals(requestId)}"/>
 	<tr id="row-${it.id}" class="row ${it.passed ? 'passed' : ''} ${it.findCommitters()} ${same ? 'expanded' : ''}">
 		<td class="details">
 			<img class="multipleCommitters ${it.findNumberCommitters() > 1 ? '' : 'hidden'}" src="${rootURL}/plugin/DescriptionDashboard/images/transparent.png" />

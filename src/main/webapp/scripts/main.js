@@ -30,15 +30,16 @@ var DescriptionDashboard = {
 
 	enableAutoRefresh: function() {
 		var currentlyExpanded = $$('.row.expanded');
-		var id = '';
-		if(currentlyExpanded.length > 0) {
-			id = currentlyExpanded[0].id;
+		var id = [];
+		for(var i = 0; i < currentlyExpanded.length; i++) {
+			id.push(currentlyExpanded[i].id);
 		}
 
-		var url = window.location.pathname + '/tableOnly?id='+id;
+		var url = window.location.pathname + '/tableOnly';
 		new Ajax.Request(url, {
 			method: 'get',
 			evalJS: 'false',
+			parameters: {id: id},
 			onSuccess: DescriptionDashboard.onUpdateSuccess,
 			onError: DescriptionDashboard.onUpdateError
 		});
@@ -122,13 +123,6 @@ var DescriptionDashboard = {
 			row.addClassName('expanded');
 			extra.removeClassName('hidden');
 		}
-
-		currentlyExpanded.each(function(it) {
-			var itExtraId = it.id.replace("row-", "extra-");
-			var itExtra = $(itExtraId);
-			it.removeClassName('expanded');
-			itExtra.addClassName('hidden');
-		});
 	},
 
 	hackGreenRow:function () {

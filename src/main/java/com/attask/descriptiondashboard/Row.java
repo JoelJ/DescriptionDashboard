@@ -152,6 +152,15 @@ public class Row implements Serializable {
 		return Collections.unmodifiableList(allChanges);
 	}
 
+	public boolean idEquals(String[] ids) {
+		for (String s : ids) {
+			if(s.equals("row-"+this.id)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if(o == null || !(o instanceof Row)) {
