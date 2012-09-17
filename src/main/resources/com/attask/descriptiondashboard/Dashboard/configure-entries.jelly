@@ -10,12 +10,12 @@
 			<select name="job_${job.name}_visible">
 				<j:choose>
 					<j:when test="${job.visible}">
-						<option selected="true" value="true">True</option>
-						<option value="false">False</option>
+						<option selected="true" value="true">Always Visible</option>
+						<option value="false">Hidden</option>
 					</j:when>
 					<j:otherwise>
-						<option value="true">True</option>
-						<option selected="true" value="false">False</option>
+						<option value="true">Always Visible</option>
+						<option selected="true" value="false">Hidden</option>
 					</j:otherwise>
 				</j:choose>
 			</select>
