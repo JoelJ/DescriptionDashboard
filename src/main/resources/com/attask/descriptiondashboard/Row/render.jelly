@@ -24,7 +24,9 @@
 				<st:include it="${it}" page="extras.jelly" />
 			</j:if>
 			<j:if test="${!same}">
-				Loading<span class="loading">...</span>
+				<div class="loading">
+					Loading<span class="ellipsis">...</span>
+				</div>
 			</j:if>
 		</td>
 	</tr>

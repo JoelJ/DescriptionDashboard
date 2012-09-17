@@ -118,26 +118,29 @@ var DescriptionDashboard = {
 			return;
 		}
 
-		var url = window.location.pathname + "/rowExtras?id="+rowId;
-		new Ajax.Request(url, {
-			method: 'get',
-			evalJS: 'false',
-			onSuccess: function(transport) {
-				var resultBody = transport.responseText;
-				extra.down('td').innerHTML = resultBody;
-			},
-			onError: function(transport) {
-				extra.down('td').innerHTML = "An error occurred.";
-				console.log(transport);
-			}
-		});
-
 		if(row.hasClassName('expanded')) {
 			row.removeClassName('expanded');
 			extra.addClassName('hidden');
 		} else {
 			row.addClassName('expanded');
 			extra.removeClassName('hidden');
+
+			var url = window.location.pathname + "/rowExtras?id="+rowId;
+			$(document.body).addClassName('loading');
+			new Ajax.Request(url, {
+				method: 'get',
+				evalJS: 'false',
+				onSuccess: function(transport) {
+					var resultBody = transport.responseText;
+					extra.down('td').innerHTML = resultBody;
+					$(document.body).removeClassName('loading');
+				},
+				onError: function(transport) {
+					extra.down('td').innerHTML = "An error occurred.";
+					$(document.body).removeClassName('loading');
+					console.log(transport);
+				}
+			});
 		}
 	},
 
