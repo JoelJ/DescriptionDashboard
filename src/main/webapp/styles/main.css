@@ -1,6 +1,9 @@
-
 .change {
-	/*max-width: 100px;*/
+	border-bottom: 1px solid black;
+}
+
+.change:nth-last-child(1) {
+	border-bottom: 1px solid transparent;
 }
 
 .change .changedFiles {
