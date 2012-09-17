@@ -3,9 +3,12 @@
 	<j:set var="lastSuccess" value="${it.findPassedRow()}"/>
 	<table class="pane bigtable ${lastSuccess == null ? '' : 'hasLastSuccess'}">
 		<tr>
-			<th id="details">Details</th>
+			<th id="details">
+				Details
+				<a class="showAll" href="#showAll"><img src="${rootURL}/plugin/DescriptionDashboard/images/transparent.png"/> </a>
+			</th>
 			<j:forEach var="header" items="${it.headers}">
-				<th>
+				<th class="cellHeader ${header.visible ? '' : 'hidden shouldBeHidden'}">
 					<a href="./job/${header.name}">${header.alias}</a>
 					<a class="easyBuild" href="./job/${header.name}/build?delay=0sec">
 						<img src="${rootURL}/plugin/DescriptionDashboard/images/transparent.png" />

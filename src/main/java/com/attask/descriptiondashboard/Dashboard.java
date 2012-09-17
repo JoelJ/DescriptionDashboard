@@ -122,7 +122,7 @@ public class Dashboard extends View {
 					Matcher matcher = descriptionPatternRegex.matcher(description);
 					if(matcher.find()) {
 						String rowID = matcher.group(descriptionPatternGroup);
-						Cell cell = Cell.createFromBuild(currentBuild);
+						Cell cell = Cell.createFromBuild(currentBuild, jobHeader.getVisible());
 						if(!cellMap.containsKey(rowID)) {
 							cellMap.put(rowID, new HashMap<String, Cell>());
 						}

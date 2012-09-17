@@ -45,7 +45,7 @@ public class Change implements Serializable {
 		this.timestamp = timestamp;
 		this.author = author;
 		this.revision = revision;
-		this.changedFiles = Collections.unmodifiableSet(new HashSet<String>(changedFiles));
+		this.changedFiles = Collections.unmodifiableSet(new TreeSet<String>(changedFiles));
 	}
 
 	public String getRevision() {

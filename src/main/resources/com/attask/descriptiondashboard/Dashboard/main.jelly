@@ -68,6 +68,12 @@
 			width: 10px;
 			height: 10px;
 		}
+
+		.showAll img {
+			width: 12px;
+			height: 12px;
+			background-image: url('${rootURL}/plugin/DescriptionDashboard/images/showAll.png');
+		}
 	</style>
 	<link rel="stylesheet" type="text/css" href="${rootURL}/plugin/DescriptionDashboard/styles/main.css"/>
 

@@ -163,6 +163,16 @@ public class Row implements Serializable {
 		return false;
 	}
 
+	public int findNumberVisibleColumns() {
+		int total = 0;
+		for (Header header : headers) {
+			if(header.getVisible()) {
+				total++;
+			}
+		}
+		return total;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if(o == null || !(o instanceof Row)) {

@@ -14,12 +14,12 @@
 				<st:include it="${it.getCell(header.name)}" page="render.jelly" />
 			</j:if>
 			<j:if test="${cell == null}">
-				<td class="not-started">?</td>
+				<td class="not-started ${header.visible ? '' : 'hidden shouldBeHidden'}">?</td>
 			</j:if>
 		</j:forEach>
 	</tr>
 	<tr id="extra-${it.id}" class="extra-details ${same ? '' : 'hidden'}">
-		<td colspan="${it.headers.size() + 1}">
+		<td colspan="${it.findNumberVisibleColumns() + 1}">
 			<j:if test="${same}">
 				<st:include it="${it}" page="extras.jelly" />
 			</j:if>
