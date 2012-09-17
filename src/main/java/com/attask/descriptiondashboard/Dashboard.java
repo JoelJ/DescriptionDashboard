@@ -151,7 +151,8 @@ public class Dashboard extends View {
 		this.jobs = createArrayList();
 
 		for (String job : Arrays.asList(jobs.split(","))) {
-			this.jobs.add(new Header(job, job, Header.Requirement.Required));
+			Header header = Header.parseFromRequest(job, request);
+			this.jobs.add(header);
 		}
 
 		this.count = Integer.parseInt(request.getParameter("_.count"));
@@ -159,6 +160,10 @@ public class Dashboard extends View {
 		this.descriptionPatternRegex = Pattern.compile(this.descriptionPattern);
 		this.descriptionPatternGroup = Integer.parseInt(request.getParameter("_.descriptionPatternGroup"));
 		this.orbSize = Integer.parseInt(request.getParameter("_.orbSize"));
+
+		//invalidate cached table
+		table = null;
+		tableCreateTime = -1;
 	}
 
 	public String findUserName() {

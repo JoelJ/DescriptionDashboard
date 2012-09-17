@@ -3,6 +3,51 @@
 	<f:entry title="Jobs (comma separated)" field="jobs">
 		<f:textbox/>
 	</f:entry>
+	<j:set var="jobCount" value="${0}"/>
+	<j:forEach var="job" items="${it.jobs}">
+		<f:entry title="Job ${job.name}" field="job_${job.name}">
+			<input type="textbox" name="job_${job.name}_alias" value="${job.alias}"/>
+			<select name="job_${job.name}_visible">
+				<j:choose>
+					<j:when test="${job.visible}">
+						<option selected="true" value="true">True</option>
+						<option value="false">False</option>
+					</j:when>
+					<j:otherwise>
+						<option value="true">True</option>
+						<option selected="true" value="false">False</option>
+					</j:otherwise>
+				</j:choose>
+			</select>
+			<select name="job_${job.name}_requirement">
+				<j:choose>
+					<j:when test="${job.requirement.toString() == 'RequiredWhenPresent'}">
+						<option value="Required">Required</option>
+						<option selected="true" value="RequiredWhenPresent">Required When Present</option>
+						<option value="NotRequired">Not Required</option>
+					</j:when>
+					<j:when test="${job.requirement.toString() == 'NotRequired'}">
+						<option value="Required">Required</option>
+						<option value="RequiredWhenPresent">Required When Present</option>
+						<option selected="true" value="NotRequired">Not Required</option>
+					</j:when>
+					<j:otherwise>
+						<option selected="true" value="Required">Required</option>
+						<option value="RequiredWhenPresent">Required When Present</option>
+						<option value="NotRequired">Not Required</option>
+					</j:otherwise>
+				</j:choose>
+			</select>
+		</f:entry>
+	</j:forEach>
+	<!--<f:entry field="jobsDetails">-->
+		<!--<f:repeatable field="jobsDetails">-->
+			<!--<f:entry field="job_${jobCount}">-->
+				<!--<f:textbox value="${it.jobs[jobCount].name}"/>-->
+			<!--</f:entry>-->
+			<!--<j:set var="jobCount" value="${jobCount + 1}"/>-->
+		<!--</f:repeatable>-->
+	<!--</f:entry>-->
 	<f:entry title="Count" field="count">
 		<f:textbox/>
 	</f:entry>
