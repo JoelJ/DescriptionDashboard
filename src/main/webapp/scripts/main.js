@@ -16,14 +16,15 @@ var DescriptionDashboard = {
 			DescriptionDashboard.showAllColumns();
 		}
 
-		DescriptionDashboard.initClickEvents();
+		$('DescriptionDashboard').observe('click', DescriptionDashboard.onRelayClick);
 	},
 
-	initClickEvents: function() {
-		$$('.row').each(function(it) {
-			it.observe('click', DescriptionDashboard.onRowClick);
-		});
-		$$('.showAll')[0].observe('click', DescriptionDashboard.onShowAllClicked);
+	onRelayClick: function(e) {
+		if(e.target.up('.row')) {
+			DescriptionDashboard.onRowClick(e);
+		} else if(e.target.hasClassName('showAll')) {
+			DescriptionDashboard.onShowAllClicked();
+		}
 	},
 
 	forceRefresh: function() {
@@ -58,7 +59,6 @@ var DescriptionDashboard = {
 		var resultBody = transport.responseText;
 		$('DescriptionDashboard').innerHTML = resultBody;
 
-		DescriptionDashboard.initClickEvents();
 		DescriptionDashboard.hackGreenRow();
 
 		DescriptionDashboard.toggleRowSelect(document.URL, true);
@@ -111,7 +111,11 @@ var DescriptionDashboard = {
 
 	onRowClick: function(event) {
 		var row = event.target.up('.row');
+		if(row == null) {
+			return;
+		}
 		var rowId = row.id;
+
 		var extraId = rowId.replace("row-", "extra-");
 		var extra = $(extraId);
 		if(extra == null) {
@@ -155,8 +159,7 @@ var DescriptionDashboard = {
 		}
 	},
 
-	onShowAllClicked: function(event) {
-		event.preventDefault();
+	onShowAllClicked: function() {
 		if(window.location.hash.indexOf("#showAll") >= 0) {
 			window.location.hash = window.location.hash.replace("#showAll", "#hideAll");
 		} else if(window.location.hash.indexOf("#hideAll") >= 0) {

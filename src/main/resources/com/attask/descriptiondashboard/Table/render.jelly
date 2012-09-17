@@ -5,7 +5,7 @@
 		<tr>
 			<th id="details">
 				Details
-				<a class="showAll" href="#showAll"><img src="${rootURL}/plugin/DescriptionDashboard/images/transparent.png"/> </a>
+				<img class="showAll" src="${rootURL}/plugin/DescriptionDashboard/images/transparent.png"/>
 			</th>
 			<j:forEach var="header" items="${it.headers}">
 				<th class="cellHeader ${header.visible ? '' : 'hidden shouldBeHidden'}">
