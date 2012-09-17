@@ -100,8 +100,6 @@ var DescriptionDashboard = {
 			return;
 		}
 
-		var currentlyExpanded = $$('.row.expanded');
-
 		var url = window.location.pathname + "/rowExtras?id="+rowId;
 		new Ajax.Request(url, {
 			method: 'get',
