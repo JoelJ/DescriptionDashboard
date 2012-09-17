@@ -227,7 +227,7 @@ public class Dashboard extends View {
 		return new ArrayList<Header>() {
 			@Override
 			public String toString() {
-				return StringUtils.join(this, ","); //TODO: do headers properly
+				return Util.join(this, ",");
 			}
 		};
 	}

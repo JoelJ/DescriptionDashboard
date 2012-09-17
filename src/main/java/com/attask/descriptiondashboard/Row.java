@@ -132,7 +132,7 @@ public class Row implements Serializable {
 				result.add(cleanCommitter);
 			}
 		}
-		return StringUtils.join(result, " ");
+		return Util.join(result, " ");
 	}
 
 	public List<Change> findChangeSet() {
