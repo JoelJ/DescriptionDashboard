@@ -153,9 +153,11 @@ public class Row implements Serializable {
 	}
 
 	public boolean idEquals(String[] ids) {
-		for (String s : ids) {
-			if(s.equals("row-"+this.id)) {
-				return true;
+		if(ids != null) {
+			for (String id : ids) {
+				if(this.id != null && ("row-" + this.id).equals(id)) {
+					return true;
+				}
 			}
 		}
 		return false;
