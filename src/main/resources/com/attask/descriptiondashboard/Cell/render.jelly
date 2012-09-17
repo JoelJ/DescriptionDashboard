@@ -1,12 +1,14 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
 		 xmlns:t="/lib/hudson" xmlns:f="/lib/form">
 	<td class="cell ${it.result} ${it.getRunning() ? 'running' : ''}">
-		<a href="./job/${it.projectName}/${it.buildNumber}/console">
+		<a class="status" href="./job/${it.projectName}/${it.buildNumber}/console">
 			<img class="status" src="${rootURL}/plugin/DescriptionDashboard/images/transparent.png" />
 		</a>
-		<a href="./job/${it.projectName}/${it.buildNumber}">#${it.buildNumber}</a>
-		<j:if test="${it.failures >= 0}">
-			(<a href="./job/${it.projectName}/${it.buildNumber}/testReport">${it.failures} failure${it.failures > 1 ? 's' : ''}</a>)
-		</j:if>
+		<span class="labels">
+			<a class="buildName" href="./job/${it.projectName}/${it.buildNumber}">#${it.buildNumber}</a>
+			<j:if test="${it.failures >= 0}">
+				<span class="failureLabel">(<a href="./job/${it.projectName}/${it.buildNumber}/testReport">${it.failures} failure${it.failures > 1 ? 's' : ''}</a>)</span>
+			</j:if>
+		</span>
 	</td>
 </j:jelly>

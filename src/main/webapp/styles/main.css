@@ -1,3 +1,21 @@
+#DescriptionDashboard table th {
+	text-align: left;
+}
+
+.cell a.status {
+	float: left;
+	margin-top: 3px;
+	margin-right: 5px;
+}
+
+.cell .labels {
+	float: left;
+}
+
+.cell .labels .failureLabel {
+	display: block;
+}
+
 .change {
 	border-bottom: 1px solid black;
 }
@@ -31,13 +49,13 @@
 }
 
 th#details {
-	width: 1px;
+	width: 120px;
 }
 
-td.not-started,
-td.cell {
-	text-align: center;
-}
+/*td.not-started,*/
+/*td.cell {*/
+	/*text-align: center;*/
+/*}*/
 
 .row.passed {
 	background-color: #CFC !important;
