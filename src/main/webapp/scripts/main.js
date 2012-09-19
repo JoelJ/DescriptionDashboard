@@ -20,12 +20,12 @@ var DescriptionDashboard = {
 	},
 
 	onRelayClick: function(e) {
-		if(e.target.up('.customColumn')) {
-			//don't open the drawer when clicking the custom row
-		} else if(e.target.up('.row')) {
-			DescriptionDashboard.onRowClick(e);
+		if(e.target.tagName == "A" || e.target.hasClassName('status')) {
+			//let normal 'a' tags click as normal
 		} else if(e.target.hasClassName('showAll')) {
 			DescriptionDashboard.onShowAllClicked();
+		} else if(e.target.up('.row')) {
+			DescriptionDashboard.onRowClick(e);
 		}
 	},
 
