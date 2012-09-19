@@ -192,6 +192,17 @@ public class Dashboard extends View {
 		return "anonymous";
 	}
 
+	public Set<SimpleUser> findUsersWithCustomImages() {
+		Set<SimpleUser> users = new HashSet<SimpleUser>();
+		for (User user : User.getAll()) {
+			String imageUrl = CustomGreenUserProperty.getImgUrl(user);
+			if(imageUrl != null) {
+				users.add(new SimpleUser(user.getId(), user.getFullName(), imageUrl));
+			}
+		}
+		return users;
+	}
+
 	@Exported
 	public List<Header> getJobs() {
 		return jobs;

@@ -20,7 +20,9 @@ var DescriptionDashboard = {
 	},
 
 	onRelayClick: function(e) {
-		if(e.target.up('.row')) {
+		if(e.target.up('.customColumn')) {
+			//don't open the drawer when clicking the custom row
+		} else if(e.target.up('.row')) {
 			DescriptionDashboard.onRowClick(e);
 		} else if(e.target.hasClassName('showAll')) {
 			DescriptionDashboard.onShowAllClicked();

@@ -49,7 +49,8 @@ public class ProjectUtils {
 			for (Object changeObj : ((AbstractBuild)build).getChangeSet()) {
 				ChangeLogSet.Entry change = (ChangeLogSet.Entry)changeObj;
 				User culprit = change.getAuthor();
-				result.add(new SimpleUser(culprit.getId(), culprit.getFullName()));
+				String imageUrl = CustomGreenUserProperty.getImgUrl(culprit);
+				result.add(new SimpleUser(culprit.getId(), culprit.getFullName(), imageUrl));
 			}
 		}
 

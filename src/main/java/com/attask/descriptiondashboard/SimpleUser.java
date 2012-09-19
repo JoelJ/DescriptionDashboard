@@ -1,5 +1,7 @@
 package com.attask.descriptiondashboard;
 
+import org.kohsuke.stapler.export.Exported;
+
 import java.io.Serializable;
 
 /**
@@ -10,8 +12,9 @@ import java.io.Serializable;
 public class SimpleUser implements Serializable {
 	private final String id;
 	private final String name;
+	private final String customGreenImageUrl;
 
-	public SimpleUser(String id, String name) {
+	public SimpleUser(String id, String name, String customGreenImageUrl) {
 		if(id == null || id.isEmpty()) {
 			throw new IllegalArgumentException("id cannot be null or empty");
 		}
@@ -21,14 +24,22 @@ public class SimpleUser implements Serializable {
 
 		this.id = id;
 		this.name = name;
+		this.customGreenImageUrl = customGreenImageUrl;
 	}
 
+	@Exported
 	public String getId() {
 		return id;
 	}
 
+	@Exported
 	public String getName() {
 		return name;
+	}
+
+	@Exported
+	public String getCustomGreenImageUrl() {
+		return customGreenImageUrl;
 	}
 
 	@Override
