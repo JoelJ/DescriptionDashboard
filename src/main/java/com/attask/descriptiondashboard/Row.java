@@ -23,7 +23,7 @@ public class Row implements Serializable {
 	private final transient List<Header> headers;
 	private final transient CustomColumn customColumn;
 	private final int totalFailures;
-	private final boolean criticalVisible;
+	private final boolean criticalRequired;
 	private final boolean criticalAll;
 	private final boolean running;
 
@@ -49,7 +49,7 @@ public class Row implements Serializable {
 
 		boolean running = false;
 		int totalFailures = 0;
-		boolean criticalVisible = false;
+		boolean criticalRequired = false;
 		boolean criticalAll = false;
 		for (Header header : headers) {
 			Cell cell = cells.get(header.getName());
@@ -60,20 +60,20 @@ public class Row implements Serializable {
 					running = true;
 				} else {
 					if(!"SUCCESS".equals(cell.getResult()) && !"UNSTABLE".equals(cell.getResult())) {
-						if(header.getVisible()) {
-							criticalVisible = true;
+						if(header.getRequirement() == Header.Requirement.Required) {
+							criticalRequired = true;
 						}
 						criticalAll = true;
 					}
 				}
 			} else {
-				if(header.getVisible()) {
-					criticalVisible = true;
+				if(header.getRequirement() != Header.Requirement.NotRequired) {
+					criticalRequired = true;
 				}
 				criticalAll = true;
 			}
 		}
-		this.criticalVisible = !running && criticalVisible;
+		this.criticalRequired = !running && criticalRequired;
 		this.criticalAll = !running && criticalAll;
 		this.running = running;
 		this.totalFailures = totalFailures;
@@ -100,8 +100,8 @@ public class Row implements Serializable {
 	}
 
 	@Exported
-	public boolean getCriticalVisible() {
-		return criticalVisible;
+	public boolean getCriticalRequired() {
+		return criticalRequired;
 	}
 
 	@Exported
@@ -158,7 +158,7 @@ public class Row implements Serializable {
 				}
 			} else {
 				String result = cell.getResult();
-				if("SUCCESS".equals(result)) {
+				if(!cell.getRunning()  && "SUCCESS".equals(result)) {
 					continue;
 				}
 
@@ -172,9 +172,11 @@ public class Row implements Serializable {
 
 	public int findNumberCommitters() {
 		Iterator<Header> iterator = headers.iterator();
-		if(iterator.hasNext()) {
+		while(iterator.hasNext()) {
 			Cell cell = cells.get(iterator.next().getName());
-			return cell.getNumberCommitters();
+			if(cell != null) {
+				return cell.getNumberCommitters();
+			}
 		}
 		return 0;
 	}
