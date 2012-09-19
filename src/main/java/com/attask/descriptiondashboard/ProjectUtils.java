@@ -43,30 +43,17 @@ public class ProjectUtils {
 		return projectMap;
 	}
 
-	public static Set<String> findCommitters(Run build) {
-		Set<String> result = new HashSet<String>();
+	public static Set<SimpleUser> findCommitters(Run build) {
+		Set<SimpleUser> result = new HashSet<SimpleUser>();
 		if(build instanceof AbstractBuild) {
 			for (Object changeObj : ((AbstractBuild)build).getChangeSet()) {
 				ChangeLogSet.Entry change = (ChangeLogSet.Entry)changeObj;
 				User culprit = change.getAuthor();
-				result.add(culprit.getId());
-				result.add(culprit.getFullName());
+				result.add(new SimpleUser(culprit.getId(), culprit.getFullName()));
 			}
 		}
 
 		return Collections.unmodifiableSet(result);
-	}
-
-	public static int findNumberCommitters(Run build) {
-		Set<String> count = new HashSet<String>();
-		if(build instanceof AbstractBuild) {
-			ChangeLogSet changeSet = ((AbstractBuild) build).getChangeSet();
-			for (Object o : changeSet) {
-				ChangeLogSet.Entry change = (ChangeLogSet.Entry)o;
-				count.add(change.getAuthor().getId());
-			}
-		}
-		return count.size();
 	}
 
 	public static List<Change> findChangeSet(Run build) {

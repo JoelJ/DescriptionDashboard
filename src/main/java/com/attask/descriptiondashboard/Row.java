@@ -76,8 +76,7 @@ public class Row implements Serializable {
 
 	public String findDateFormatted() {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm z", Locale.US);
-		String format = simpleDateFormat.format(findDate());
-		return format;
+		return simpleDateFormat.format(findDate());
 	}
 
 	public String findDatePretty() {
@@ -126,13 +125,20 @@ public class Row implements Serializable {
 	public String findCommitters() {
 		Set<String> result = new HashSet<String>();
 		for (Cell cell : cells.values()) {
-			for (String committer : cell.getCommitters()) {
-				String cleanCommitter = committer.replaceAll("\\s+", ""); //no spaces in the class name
-				cleanCommitter = Util.escape(cleanCommitter); //no XSS attacks, please
-				result.add(cleanCommitter);
+			for (SimpleUser committer : cell.getCommitters()) {
+				String cleanCommitterId = cleanString(committer.getId());
+				result.add(cleanCommitterId);
+				String cleanCommitterName = cleanString(committer.getName());
+				result.add(cleanCommitterName);
 			}
 		}
 		return Util.join(result, " ");
+	}
+
+	private String cleanString(String cleanCommitter) {
+		cleanCommitter = cleanCommitter.replaceAll("\\s+", ""); //no spaces in the class name
+		cleanCommitter = Util.escape(cleanCommitter); //no XSS attacks, please
+		return cleanCommitter;
 	}
 
 	public List<Change> findChangeSet() {

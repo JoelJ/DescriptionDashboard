@@ -25,8 +25,7 @@ public class Cell implements Serializable {
 	private final String projectName;
 	private final int buildNumber;
 	private final boolean running;
-	private final Set<String> committers;
-	private final int numberCommitters;
+	private final Set<SimpleUser> committers;
 	private final boolean visible;
 
 	public static Cell createFromBuild(Run build, boolean visible) {
@@ -36,12 +35,11 @@ public class Cell implements Serializable {
 		Result result = build.getResult();
 		String resultString = result == null ? "RUNNING" : result.toString();
 		boolean running = build.isBuilding();
-		Set<String> committers = ProjectUtils.findCommitters(build);
-		int numberCommitters = ProjectUtils.findNumberCommitters(build);
-		return new Cell(name, failureCount, resultString, description, build.getTime(), build.getParent().getName(), build.getNumber(), running, committers, numberCommitters, visible);
+		Set<SimpleUser> committers = ProjectUtils.findCommitters(build);
+		return new Cell(name, failureCount, resultString, description, build.getTime(), build.getParent().getName(), build.getNumber(), running, committers, visible);
 	}
 
-	private Cell(String name, int failures, String result, String description, Date date, String projectName, int buildNumber, boolean running, Set<String> committers, int numberCommitters, boolean visible) {
+	private Cell(String name, int failures, String result, String description, Date date, String projectName, int buildNumber, boolean running, Set<SimpleUser> committers, boolean visible) {
 		this.name = name;
 		this.failures = failures;
 		this.result = result;
@@ -51,7 +49,6 @@ public class Cell implements Serializable {
 		this.buildNumber = buildNumber;
 		this.running = running;
 		this.committers = committers;
-		this.numberCommitters = numberCommitters;
 		this.visible = visible;
 	}
 
@@ -96,13 +93,13 @@ public class Cell implements Serializable {
 	}
 
 	@Exported
-	public Set<String> getCommitters() {
+	public Set<SimpleUser> getCommitters() {
 		return committers;
 	}
 
 	@Exported
 	public int getNumberCommitters() {
-		return numberCommitters;
+		return committers.size();
 	}
 
 	@Exported
