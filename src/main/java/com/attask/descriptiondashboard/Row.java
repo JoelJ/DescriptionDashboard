@@ -22,6 +22,10 @@ public class Row implements Serializable {
 	private final Map<String, Cell> cells;
 	private final transient List<Header> headers;
 	private final transient CustomColumn customColumn;
+	private final int totalFailures;
+	private final boolean criticalVisible;
+	private final boolean criticalAll;
+	private final boolean running;
 
 	public Row(String id, String description, Map<String, Cell> cells, List<Header> headers, CustomColumn customColumn) {
 		if(id == null) {
@@ -42,6 +46,37 @@ public class Row implements Serializable {
 		this.cells = cells;
 		this.headers = headers;
 		this.customColumn = customColumn;
+
+		boolean running = false;
+		int totalFailures = 0;
+		boolean criticalVisible = false;
+		boolean criticalAll = false;
+		for (Header header : headers) {
+			Cell cell = cells.get(header.getName());
+			if(cell != null) {
+				int failures = cell.getFailures();
+				totalFailures += failures > 0 ? failures : 0;
+				if(cell.getRunning()) {
+					running = true;
+				} else {
+					if(!"SUCCESS".equals(cell.getResult()) && !"UNSTABLE".equals(cell.getResult())) {
+						if(header.getVisible()) {
+							criticalVisible = true;
+						}
+						criticalAll = true;
+					}
+				}
+			} else {
+				if(header.getVisible()) {
+					criticalVisible = true;
+				}
+				criticalAll = true;
+			}
+		}
+		this.criticalVisible = !running && criticalVisible;
+		this.criticalAll = !running && criticalAll;
+		this.running = running;
+		this.totalFailures = totalFailures;
 	}
 
 	@Exported
@@ -57,6 +92,26 @@ public class Row implements Serializable {
 	@Exported
 	public Map<String, Cell> getCells() {
 		return cells;
+	}
+
+	@Exported
+	public int getTotalFailures() {
+		return totalFailures;
+	}
+
+	@Exported
+	public boolean getCriticalVisible() {
+		return criticalVisible;
+	}
+
+	@Exported
+	public boolean getCriticalAll() {
+		return criticalAll;
+	}
+
+	@Exported
+	public boolean getRunning() {
+		return running;
 	}
 
 	public CustomColumn getCustomColumn() {

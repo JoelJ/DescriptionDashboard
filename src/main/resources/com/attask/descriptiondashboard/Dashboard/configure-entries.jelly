@@ -40,7 +40,10 @@
 			</select>
 		</f:entry>
 	</j:forEach>
-	<f:entry title="Count" field="count">
+	<f:entry title="Rows Displayed" field="count">
+		<f:textbox/>
+	</f:entry>
+	<f:entry title="Age Before Critical" field="maxAge">
 		<f:textbox/>
 	</f:entry>
 	<f:entry title="Description Pattern" field="descriptionPattern">

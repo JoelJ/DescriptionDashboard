@@ -41,6 +41,7 @@ public class Dashboard extends View {
 	private int logLinesToSearch;
 	private String injectTop;
 	private String injectBottom;
+	private int maxAge;
 
 	private transient Pattern descriptionPatternRegex;
 	private transient Table table;
@@ -139,7 +140,7 @@ public class Dashboard extends View {
 					Matcher matcher = descriptionPatternRegex.matcher(description);
 					if(matcher.find()) {
 						String rowID = matcher.group(descriptionPatternGroup);
-						Cell cell = Cell.createFromBuild(currentBuild, jobHeader.getVisible(), testStatusRegex, testStatusGroup, logLinesToSearch);
+						Cell cell = Cell.createFromBuild(currentBuild, jobHeader.getVisible(), testStatusRegex, testStatusGroup, logLinesToSearch, maxAge);
 						if(!cellMap.containsKey(rowID)) {
 							cellMap.put(rowID, new HashMap<String, Cell>());
 						}
@@ -205,6 +206,13 @@ public class Dashboard extends View {
 
 		this.injectTop = request.getParameter("_.injectTop");
 		this.injectBottom = request.getParameter("_.injectBottom");
+
+		String maxAge = request.getParameter("_.maxAge");
+		if(maxAge != null && !maxAge.isEmpty()) {
+			this.maxAge = Integer.parseInt(maxAge);
+		} else {
+			this.maxAge = 0;
+		}
 
 		//invalidate cached table
 		table = null;
@@ -319,6 +327,11 @@ public class Dashboard extends View {
 	@Exported
 	public int getLogLinesToSearch() {
 		return logLinesToSearch;
+	}
+
+	@Exported
+	public int getMaxAge() {
+		return maxAge;
 	}
 
 	@SuppressWarnings("UnusedDeclaration")

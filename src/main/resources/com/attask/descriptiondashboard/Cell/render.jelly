@@ -1,6 +1,6 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
 		 xmlns:t="/lib/hudson" xmlns:f="/lib/form">
-	<td class="cell ${it.result} ${it.getRunning() ? 'running' : ''} ${it.visible ? '' : 'hidden shouldBeHidden'}">
+	<td class="cell ${it.result} ${it.getRunning() ? 'running' : ''} ${it.visible ? '' : 'hidden shouldBeHidden'} ${it.critical ? 'critical' : ''}">
 		<a class="status" href="./job/${it.projectName}/${it.buildNumber}/console">
 			<img class="status" src="${rootURL}/plugin/DescriptionDashboard/images/transparent.png" />
 		</a>

@@ -3,6 +3,7 @@ package com.attask.descriptiondashboard;
 import hudson.model.*;
 import hudson.plugins.git.GitChangeSet;
 import hudson.scm.ChangeLogSet;
+import hudson.tasks.junit.CaseResult;
 import hudson.tasks.test.AbstractTestResultAction;
 import jenkins.model.Jenkins;
 
@@ -97,5 +98,30 @@ public class ProjectUtils {
 			}
 		}
 		return Collections.unmodifiableList(changes);
+	}
+
+	public static boolean hasAgeOver(Run build, int age) {
+		if(age <= 0) {
+			return false;
+		}
+
+		AbstractTestResultAction testResultAction = build.getAction(AbstractTestResultAction.class);
+		if(testResultAction == null) {
+			return false;
+		}
+
+
+		List<CaseResult> failedTests = testResultAction.getFailedTests();
+		if(failedTests == null) {
+			return false;
+		}
+
+		for (CaseResult failedTest : failedTests) {
+			if(failedTest.getAge() >= age) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

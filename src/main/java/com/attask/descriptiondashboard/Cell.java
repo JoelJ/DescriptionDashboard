@@ -27,8 +27,9 @@ public class Cell implements Serializable {
 	private final boolean running;
 	private final Set<SimpleUser> committers;
 	private final boolean visible;
+	private final boolean critical;
 
-	public static Cell createFromBuild(Run build, boolean visible, Pattern testStatusRegex, int testStatusGroup, int logLinesToSearch) {
+	public static Cell createFromBuild(Run build, boolean visible, Pattern testStatusRegex, int testStatusGroup, int logLinesToSearch, int maxAge) {
 		String description = build.getDescription();
 		String name = build.getFullDisplayName();
 		boolean running = build.isBuilding();
@@ -50,10 +51,11 @@ public class Cell implements Serializable {
 		}
 		String resultString = result == null ? "RUNNING" : result.toString();
 		Set<SimpleUser> committers = ProjectUtils.findCommitters(build);
-		return new Cell(name, failureCount, resultString, description, build.getTime(), build.getParent().getName(), build.getNumber(), running, committers, visible);
+		boolean critical = ProjectUtils.hasAgeOver(build, maxAge);
+		return new Cell(name, failureCount, resultString, description, build.getTime(), build.getParent().getName(), build.getNumber(), running, committers, visible, critical);
 	}
 
-	private Cell(String name, int failures, String result, String description, Date date, String projectName, int buildNumber, boolean running, Set<SimpleUser> committers, boolean visible) {
+	private Cell(String name, int failures, String result, String description, Date date, String projectName, int buildNumber, boolean running, Set<SimpleUser> committers, boolean visible, boolean critical) {
 		this.name = name;
 		this.failures = failures;
 		this.result = result;
@@ -64,6 +66,7 @@ public class Cell implements Serializable {
 		this.running = running;
 		this.committers = committers;
 		this.visible = visible;
+		this.critical = critical;
 	}
 
 	@Exported
@@ -119,5 +122,15 @@ public class Cell implements Serializable {
 	@Exported
 	public boolean getVisible() {
 		return visible;
+	}
+
+	@Exported
+	public boolean getCritical() {
+		return critical;
+	}
+
+	@Override
+	public String toString() {
+		return "Cell " + this.getName() + " (" + this.getResult() + ")";
 	}
 }
