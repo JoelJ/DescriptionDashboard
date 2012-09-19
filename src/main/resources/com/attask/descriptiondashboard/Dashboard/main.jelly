@@ -63,10 +63,10 @@
 
 		.easyBuild img {
 			background-image: url('${rootURL}/static/432ed95f/images/16x16/clock.png');
-			margin-left: 3px;
-			top: 0px;
-			width: 10px;
-			height: 10px;
+		}
+
+		.easyConfig img {
+			background-image: url('${rootURL}/static/432ed95f/images/16x16/setting.png');
 		}
 
 		img.showAll {

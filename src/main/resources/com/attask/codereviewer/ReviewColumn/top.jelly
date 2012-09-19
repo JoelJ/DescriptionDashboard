@@ -3,6 +3,16 @@
 		img.review {
 			width: 20px;
 			height: 20px;
+
+			background-image: url('${rootURL}/plugin/DescriptionDashboard/images/exclamation.png');
+		}
+
+		img.review.accepted {
+			background-image: url('${rootURL}/plugin/DescriptionDashboard/images/thumbup.png');
+		}
+
+		img.review.rejected {
+			background-image: url('${rootURL}/plugin/DescriptionDashboard/images/thumbdown.png');
 		}
 	</style>
 </j:jelly>

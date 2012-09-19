@@ -1,7 +1,13 @@
+.easyLink img {
+	margin-left: 3px;
+	top: 0px;
+	width: 10px;
+	height: 10px;
+}
+
 th.customColumn {
 	width: 1px;
 }
-
 
 body.loading {
 	cursor: wait;

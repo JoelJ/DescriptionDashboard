@@ -15,7 +15,10 @@
 			<j:forEach var="header" items="${it.headers}">
 				<th class="cellHeader ${header.visible ? '' : 'hidden shouldBeHidden'}">
 					<a href="./job/${header.name}">${header.alias}</a>
-					<a class="easyBuild" href="./job/${header.name}/build?delay=0sec">
+					<a class="easyLink easyBuild" href="./job/${header.name}/build?delay=0sec">
+						<img src="${rootURL}/plugin/DescriptionDashboard/images/transparent.png" />
+					</a>
+					<a class="easyLink easyConfig" href="./job/${header.name}/configure">
 						<img src="${rootURL}/plugin/DescriptionDashboard/images/transparent.png" />
 					</a>
 				</th>
