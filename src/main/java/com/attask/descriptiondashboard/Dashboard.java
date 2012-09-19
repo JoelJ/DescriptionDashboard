@@ -1,6 +1,7 @@
 package com.attask.descriptiondashboard;
 
 import hudson.Extension;
+import hudson.ExtensionList;
 import hudson.Util;
 import hudson.model.*;
 import jenkins.model.Jenkins;
@@ -34,11 +35,13 @@ public class Dashboard extends View {
 	private String descriptionPattern;
 	private int descriptionPatternGroup;
 	private int orbSize;
+	private String customColumn;
 
 	private transient Pattern descriptionPatternRegex;
 	private transient Table table;
 	private transient long tableCreateTime = -1;
 	private transient static final long CACHE_TIME = 5000; // 5 seconds
+	private transient CustomColumn customColumnCached;
 
 	@DataBoundConstructor
 	public Dashboard(String name) {
@@ -68,7 +71,7 @@ public class Dashboard extends View {
 
 	private Table generateTable(int count, List<Header> jobs) {
 		Map<String, Map<String, Cell>> cellMap = generateCellMap(count + 10); // Add 10 to help prevent the bottom from being jagged
-		return Table.createFromCellMap(count, jobs, cellMap);
+		return Table.createFromCellMap(count, jobs, cellMap, this.createCustomColumn());
 	}
 
 	@WebMethod(name = "json")
@@ -161,11 +164,15 @@ public class Dashboard extends View {
 		this.descriptionPatternGroup = Integer.parseInt(request.getParameter("_.descriptionPatternGroup"));
 		this.orbSize = Integer.parseInt(request.getParameter("_.orbSize"));
 
+		this.customColumn = request.getParameter("_.customColumn");
+		this.customColumnCached = null;
+
 		//invalidate cached table
 		table = null;
 		tableCreateTime = -1;
 	}
 
+	@SuppressWarnings("UnusedDeclaration")
 	public String findUserName() {
 		User current = User.current();
 		if(current != null) {
@@ -176,6 +183,7 @@ public class Dashboard extends View {
 		return "anonymous";
 	}
 
+	@SuppressWarnings("UnusedDeclaration")
 	public String findUserId() {
 		User current = User.current();
 		if(current != null) {
@@ -205,8 +213,44 @@ public class Dashboard extends View {
 	}
 
 	@Exported
+	public String getCustomColumn() {
+		return customColumn;
+	}
+
+	@SuppressWarnings("UnusedDeclaration")
+	public CustomColumn createCustomColumn()  {
+		if(customColumnCached != null) {
+			return customColumnCached;
+		}
+
+		if (getCustomColumn() == null || getCustomColumn().isEmpty()) {
+			return null;
+		}
+
+		try {
+			@SuppressWarnings("unchecked")
+			Class<? extends CustomColumn> customColumnClass = (Class<? extends CustomColumn>) Class.forName(getCustomColumn());
+			CustomColumn customColumn = customColumnClass.newInstance();
+			this.customColumnCached = customColumn;
+			return customColumn;
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException(e);
+		} catch (InstantiationException e) {
+			throw new RuntimeException(e);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+
+	}
+
+	@Exported
 	public int getOrbSize() {
 		return orbSize;
+	}
+
+	@SuppressWarnings("UnusedDeclaration")
+	public ExtensionList<CustomColumn> allCustomColumns() {
+		return CustomColumn.all();
 	}
 
 	@Override

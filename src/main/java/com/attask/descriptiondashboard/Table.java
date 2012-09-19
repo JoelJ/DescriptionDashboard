@@ -15,15 +15,16 @@ import java.util.*;
 public class Table implements Serializable {
 	private final List<Header> headers;
 	private final List<Row> rows;
+	private transient final CustomColumn customColumn;
 
-	public static Table createFromCellMap(int maxRowCount, List<Header> jobs, Map<String, Map<String, Cell>> cellMap) {
+	public static Table createFromCellMap(int maxRowCount, List<Header> jobs, Map<String, Map<String, Cell>> cellMap, CustomColumn customColumn) {
 		List<Row> rows = new ArrayList<Row>();
 		for (Map.Entry<String, Map<String, Cell>> entry : cellMap.entrySet()) {
 			String rowID = entry.getKey();
 			Map<String, Cell> builds = entry.getValue();
 			Cell first = builds.values().iterator().next();
 			String description = first.getDescription();
-			Row row = new Row(rowID, description, builds, jobs);
+			Row row = new Row(rowID, description, builds, jobs, customColumn);
 			rows.add(row);
 		}
 
@@ -45,12 +46,13 @@ public class Table implements Serializable {
 			rows = rows.subList(0, maxRowCount);
 		}
 
-		return new Table(jobs, rows);
+		return new Table(jobs, rows, customColumn);
 	}
 
-	private Table(List<Header> headers, List<Row> rows) {
+	private Table(List<Header> headers, List<Row> rows, CustomColumn customColumn) {
 		this.headers = Collections.unmodifiableList(headers);
 		this.rows = Collections.unmodifiableList(rows);
+		this.customColumn = customColumn;
 	}
 
 	@Exported
@@ -61,6 +63,10 @@ public class Table implements Serializable {
 	@Exported
 	public List<Header> getHeaders() {
 		return headers;
+	}
+
+	public CustomColumn getCustomColumn() {
+		return customColumn;
 	}
 
 	public Row findPassedRow() {

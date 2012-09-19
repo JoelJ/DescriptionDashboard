@@ -21,8 +21,9 @@ public class Row implements Serializable {
 	private final String description;
 	private final Map<String, Cell> cells;
 	private final transient List<Header> headers;
+	private final transient CustomColumn customColumn;
 
-	public Row(String id, String description, Map<String, Cell> cells, List<Header> headers) {
+	public Row(String id, String description, Map<String, Cell> cells, List<Header> headers, CustomColumn customColumn) {
 		if(id == null) {
 			throw new IllegalArgumentException("id cannot be null");
 		}
@@ -40,6 +41,7 @@ public class Row implements Serializable {
 		this.description = description;
 		this.cells = cells;
 		this.headers = headers;
+		this.customColumn = customColumn;
 	}
 
 	@Exported
@@ -55,6 +57,10 @@ public class Row implements Serializable {
 	@Exported
 	public Map<String, Cell> getCells() {
 		return cells;
+	}
+
+	public CustomColumn getCustomColumn() {
+		return customColumn;
 	}
 
 	public Cell getCell(String name) {

@@ -1,8 +1,14 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
 		 xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+	${it.customColumn.beforeRow(it)}
 	<j:set var="requestId" value="${request.getParameterValues('id')}"/>
 	<j:set var="same" value="${it.idEquals(requestId)}"/>
 	<tr id="row-${it.id}" class="row ${it.passed ? 'passed' : ''} ${it.findCommitters()} ${same ? 'expanded' : ''}">
+		<td class="customColumn">
+			<j:if test="${it.customColumn != null}">
+				<st:include it="${it.customColumn}" page="cell.jelly" />
+			</j:if>
+		</td>
 		<td class="details">
 			<img class="multipleCommitters ${it.findNumberCommitters() > 1 ? '' : 'hidden'}" src="${rootURL}/plugin/DescriptionDashboard/images/transparent.png" />
 			<div class="description">${it.description}</div>
@@ -19,7 +25,7 @@
 		</j:forEach>
 	</tr>
 	<tr id="extra-${it.id}" class="extra-details ${same ? '' : 'hidden'}">
-		<td colspan="${it.findNumberVisibleColumns() + 1}">
+		<td colspan="${it.findNumberVisibleColumns() + 2}">
 			<j:if test="${same}">
 				<st:include it="${it}" page="extras.jelly" />
 			</j:if>
@@ -30,4 +36,5 @@
 			</j:if>
 		</td>
 	</tr>
+	${it.customColumn.afterRow(it)}
 </j:jelly>

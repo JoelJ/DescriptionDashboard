@@ -191,7 +191,7 @@ var DescriptionDashboard = {
 
 	resetColumnSpan: function(columnCount) {
 		$$('.extra-details td').each(function(it) {
-			it.setAttribute('colspan', columnCount+1);
+			it.setAttribute('colspan', columnCount+2);
 		});
 	}
 };

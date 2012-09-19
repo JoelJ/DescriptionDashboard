@@ -1,0 +1,143 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler">
+    <link rel="stylesheet" type="text/css" href="${rootURL}/plugin/DescriptionDashboard/styles/summary.css"/>
+    <style>
+        .verifications.Accepted h2,
+        .reviews.Accepted h2 {
+        background-image: url('${rootURL}/plugin/DescriptionDashboard/images/thumbup.png');
+        }
+
+        .verifications.Rejected h2 ,
+        .reviews.Rejected h2 {
+        background-image: url('${rootURL}/plugin/DescriptionDashboard/images/thumbdown.png');
+        }
+    </style>
+
+	<div id="BaseCodeReviewAction">
+		<div class="verifications ${it.calculateVerifiedStatus()}">
+			<h2><a name="verifications">Verifications</a></h2>
+			<j:if test="${it.getVerifyList().isEmpty()}">
+				<div class="empty">None</div>
+			</j:if>
+			<ul>
+
+                    <j:forEach var="review" items="${it.getVerifyList()}">
+                	    <form method="POST" action="codeReview/deleteVerification?id=${review.id}">
+                            <st:include page="main.jelly" it="${review}"/>
+                        </form>
+                    </j:forEach>
+			</ul>
+
+		</div>
+		<div class="reviews ${it.calculateReviewStatus()}">
+			<h2><a name="reviews">Reviews</a></h2>
+			<j:if test="${it.getReviewList().isEmpty()}">
+				<div class="empty">None</div>
+			</j:if>
+			<ul>
+                    <j:forEach var="review" items="${it.getReviewList()}">
+                        <form method="POST" action="codeReview/deleteReview?id=${review.id}">
+                            <st:include page="main.jelly" it="${review}"/>
+                        </form>
+                    </j:forEach>
+			</ul>
+		</div>
+
+		<!--made it a div because having it in a form caused an error on submit-->
+		<div id="newReviewForm">
+			<h3>New Review</h3>
+			<div class="status">
+				<j:forEach var="status" items="${it.getStatuses()}">
+                    <input type="radio" value="${status}" name="status" id="${status}"/>
+                    <label for="${status}">
+                        <j:if test="${status == 'Accepted'}">
+                            <img src="${rootURL}/plugin/DescriptionDashboard/images/thumbup.png" title="Accept the build" />
+                        </j:if>
+                        <j:if test="${status == 'NotReviewed'}">
+                            <img src="${rootURL}/plugin/DescriptionDashboard/images/neutral.png" title="Write a review without accepting or rejecting the build" />
+                        </j:if>
+                        <j:if test="${status == 'Rejected'}">
+                            <img src="${rootURL}/plugin/DescriptionDashboard/images/thumbdown.png" title="Reject the build" />
+                        </j:if>
+                    </label>
+				</j:forEach>
+			</div>
+            <div class="hidden-form">
+                <j:set var="checklistItems" value="${it.getChecklistItems()}"/>
+                <j:if test="${checklistItems!=null and !checklistItems.isEmpty() and !checklistItems.get(0).isEmpty()}">
+                    <j:forEach var="checklistItem" items="${checklistItems}">
+                        <input type="checkbox" value="checklistItem" class="checkbox">${checklistItem}</input><br/>
+                    </j:forEach>
+                </j:if>
+                <textarea name="message"></textarea>
+                <j:choose>
+                    <j:when test="${checklistItems!=null and !checklistItems.isEmpty() and !checklistItems.get(0).isEmpty()}">
+                        <input id="newReviewButton" type="submit" disabled="true" />
+                    </j:when>
+                    <j:otherwise>
+                        <input id="newReviewButton" type="submit" />
+                    </j:otherwise>
+                </j:choose>
+            </div>
+		</div>
+	</div>
+	<script>
+        <!--$$('#newReviewForm input#NotReviewed')[0].click(); // select the NotReviewed by default-->
+
+		$('newReviewButton').observe('click', function(e) {
+			var message = $('newReviewForm').down('textarea[name=message]');
+
+			$$('#newReviewForm input').each(function(it){ it.disable(); });
+			$$('#newReviewForm textarea').each(function(it){ it.disable(); });
+
+            var statusRadio;
+            var statusRadios = $$("#newReviewForm .status input");
+            for(var i = 0; i &lt; statusRadios.length; i++) {
+                if(statusRadios[i].checked) {
+                    statusRadio = statusRadios[i];
+                    break;
+                }
+            }
+
+			var messageValue = message.value;
+			var statusValue = statusRadio.value;
+
+			new Ajax.Request('codeReview/review', {
+				method: 'post',
+				parameters: {message: messageValue, status: statusValue},
+				onSuccess: function(response) {
+					window.location.reload();
+				},
+				onError: function(response) {
+					console.log("error", response);
+				}
+			});
+		});
+
+        $$('#newReviewForm .status label').each(function(it) {
+            console.log(it);
+            it.observe('click', function(evt) {
+                var hiddenForm = $$('#newReviewForm .hidden-form');
+                if(hiddenForm.length > 0) {
+                    hiddenForm[0].toggleClassName('hidden-form', false);
+                }
+            });
+        });
+        $$(".checkbox").each(function(it){
+            it.observe('click', function(evt){
+                var isChecked = true;
+                $$(".checkbox").each(function(it){
+                if(!it.checked){
+                    isChecked=false;
+                }
+            });
+            if(isChecked){
+
+                $("newReviewButton").removeAttribute("disabled");
+            }
+            if(!isChecked){
+                $("newReviewButton").setAttribute("disabled", true);
+            }
+        });
+        });
+	</script>
+</j:jelly>

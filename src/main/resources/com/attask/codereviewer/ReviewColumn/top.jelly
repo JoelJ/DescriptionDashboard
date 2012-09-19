@@ -1,0 +1,8 @@
+<j:jelly xmlns:j="jelly:core">
+	<style>
+		img.review {
+			width: 20px;
+			height: 20px;
+		}
+	</style>
+</j:jelly>

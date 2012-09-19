@@ -1,0 +1,18 @@
+<j:jelly xmlns:j="jelly:core">
+	<j:set var="reviewStatus" value="${it.reviewAction.calculateReviewStatus()}"/>
+	<j:set var="verifyStatus" value="${it.reviewAction.calculateVerifiedStatus()}"/>
+
+    <a href="${it.currentBuild.url}#reviews">
+        <j:choose>
+            <j:when test="${reviewStatus == 'Rejected'}">
+                <img class="review" src="${rootURL}/plugin/DescriptionDashboard/images/thumbdown.png" title="${it.reviewTitle}" />
+            </j:when>
+            <j:when test="${reviewStatus == 'Accepted'}">
+                <img class="review" src="${rootURL}/plugin/DescriptionDashboard/images/thumbup.png" title="${it.reviewTitle}" />
+            </j:when>
+            <j:otherwise>
+                <img class="review" src="${rootURL}/plugin/DescriptionDashboard/images/exclamation.png" title="This has not been reviewed yet!" />
+            </j:otherwise>
+        </j:choose>
+    </a>
+</j:jelly>

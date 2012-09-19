@@ -1,8 +1,13 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
 		 xmlns:t="/lib/hudson" xmlns:f="/lib/form">
 	<j:set var="lastSuccess" value="${it.findPassedRow()}"/>
+	<j:if test="${it.customColumn != null}">
+		<st:include it="${it.customColumn}" page="top.jelly" />
+	</j:if>
 	<table class="pane bigtable ${lastSuccess == null ? '' : 'hasLastSuccess'}">
 		<tr>
+			<th class="customColumn">
+			</th>
 			<th id="details">
 				Details
 				<img class="showAll" src="${rootURL}/plugin/DescriptionDashboard/images/transparent.png"/>
@@ -26,4 +31,7 @@
 			<st:include it="${row}" page="render.jelly" />
 		</j:forEach>
 	</table>
+	<j:if test="${it.customColumn != null}">
+		<st:include it="${it.customColumn}" page="bottom.jelly" />
+	</j:if>
 </j:jelly>
