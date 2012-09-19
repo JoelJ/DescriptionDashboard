@@ -49,6 +49,15 @@
 	<f:entry title="Description Pattern Group" field="descriptionPatternGroup">
 		<f:textbox/>
 	</f:entry>
+	<f:entry title="Test Status Pattern" field="testStatusPattern">
+		<f:textbox/>
+	</f:entry>
+	<f:entry title="Test Status Group" field="testStatusGroup">
+		<f:textbox/>
+	</f:entry>
+	<f:entry title="# Log lines to check" field="logLinesToSearch">
+		<f:textbox/>
+	</f:entry>
 	<f:entry title="Status Image Size" field="orbSize">
 		<select name="_.orbSize">
 			<option value="${it.orbSize}">Current (${it.orbSize}x${it.orbSize})</option>
@@ -71,14 +80,5 @@
 				</j:if>
 			</j:forEach>
 		</select>
-	</f:entry>
-	<f:entry title="Test Status Pattern" field="testStatusPattern">
-		<f:textbox/>
-	</f:entry>
-	<f:entry title="Test Status Group" field="testStatusGroup">
-		<f:textbox/>
-	</f:entry>
-	<f:entry title="# Log lines to check" field="logLinesToSearch">
-		<f:textbox/>
 	</f:entry>
 </j:jelly>

@@ -35,7 +35,7 @@ public class Cell implements Serializable {
 
 		int failureCount;
 		Result result;
-		if(running) {
+		if(running && testStatusRegex != null) {
 			failureCount = ProjectUtils.grepFailureCount(build, testStatusRegex, testStatusGroup, logLinesToSearch);
 			if(failureCount == -1) {
 				result = Result.NOT_BUILT;

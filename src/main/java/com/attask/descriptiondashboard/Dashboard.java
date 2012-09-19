@@ -74,8 +74,12 @@ public class Dashboard extends View {
 	}
 
 	private Table generateTable(int count, List<Header> jobs) {
-		if(this.testStatusRegex == null) {
-			this.testStatusRegex = Pattern.compile(this.testStatusPattern);
+		if(this.testStatusPattern != null && !this.testStatusPattern.isEmpty()) {
+			if(this.testStatusRegex == null) {
+				this.testStatusRegex = Pattern.compile(this.testStatusPattern);
+			}
+		} else {
+			this.testStatusRegex = null;
 		}
 
 		Map<String, Map<String, Cell>> cellMap = generateCellMap(count + 10, this.testStatusRegex, this.testStatusGroup, this.logLinesToSearch); // Add 10 to help prevent the bottom from being jagged
@@ -176,7 +180,13 @@ public class Dashboard extends View {
 		this.customColumnCached = null;
 
 		this.testStatusPattern = request.getParameter("_.testStatusPattern");
-		this.testStatusRegex = Pattern.compile(this.testStatusPattern);
+		if(this.testStatusPattern != null && !this.testStatusPattern.isEmpty()) {
+			if(this.testStatusRegex == null) {
+				this.testStatusRegex = Pattern.compile(this.testStatusPattern);
+			}
+		} else {
+			this.testStatusRegex = null;
+		}
 		String testStatusGroup = request.getParameter("_.testStatusGroup");
 		if(testStatusGroup == null || testStatusGroup.isEmpty()) {
 			this.testStatusGroup = 0;
@@ -281,6 +291,21 @@ public class Dashboard extends View {
 	@Exported
 	public int getOrbSize() {
 		return orbSize;
+	}
+
+	@Exported
+	public String getTestStatusPattern() {
+		return testStatusPattern;
+	}
+
+	@Exported
+	public int getTestStatusGroup() {
+		return testStatusGroup;
+	}
+
+	@Exported
+	public int getLogLinesToSearch() {
+		return logLinesToSearch;
 	}
 
 	@SuppressWarnings("UnusedDeclaration")

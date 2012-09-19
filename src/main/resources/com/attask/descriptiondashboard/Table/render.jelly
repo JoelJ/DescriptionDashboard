@@ -27,9 +27,18 @@
 			<st:include it="${passedRow}" page="render.jelly" />
 		</j:if>
 
-		<j:forEach var="row" items="${it.rows}">
-			<st:include it="${row}" page="render.jelly" />
-		</j:forEach>
+		<j:choose>
+			<j:when test="${it.rows != null and !it.rows.isEmpty()}">
+				<j:forEach var="row" items="${it.rows}">
+					<st:include it="${row}" page="render.jelly" />
+				</j:forEach>
+			</j:when>
+			<j:otherwise>
+				<tr class="empty-row">
+					<td class="empty-cell" colspan="${it.headers.size() + 2}">There are now rows to be displayed</td>
+				</tr>
+			</j:otherwise>
+		</j:choose>
 	</table>
 	<j:if test="${it.customColumn != null}">
 		<st:include it="${it.customColumn}" page="bottom.jelly" />
