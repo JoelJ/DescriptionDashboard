@@ -7,8 +7,8 @@ import org.kohsuke.stapler.export.ExportedBean;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * User: Joel Johnson
@@ -28,13 +28,27 @@ public class Cell implements Serializable {
 	private final Set<SimpleUser> committers;
 	private final boolean visible;
 
-	public static Cell createFromBuild(Run build, boolean visible) {
+	public static Cell createFromBuild(Run build, boolean visible, Pattern testStatusRegex, int testStatusGroup, int logLinesToSearch) {
 		String description = build.getDescription();
 		String name = build.getFullDisplayName();
-		int failureCount = ProjectUtils.getFailureCount(build);
-		Result result = build.getResult();
-		String resultString = result == null ? "RUNNING" : result.toString();
 		boolean running = build.isBuilding();
+
+		int failureCount;
+		Result result;
+		if(running) {
+			failureCount = ProjectUtils.grepFailureCount(build, testStatusRegex, testStatusGroup, logLinesToSearch);
+			if(failureCount == -1) {
+				result = Result.NOT_BUILT;
+			} else if(failureCount == 0) {
+				result = Result.SUCCESS;
+			} else {
+				result = Result.UNSTABLE;
+			}
+		} else {
+			failureCount = ProjectUtils.getFailureCount(build);
+			result = build.getResult();
+		}
+		String resultString = result == null ? "RUNNING" : result.toString();
 		Set<SimpleUser> committers = ProjectUtils.findCommitters(build);
 		return new Cell(name, failureCount, resultString, description, build.getTime(), build.getParent().getName(), build.getNumber(), running, committers, visible);
 	}

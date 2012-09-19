@@ -36,12 +36,16 @@ public class Dashboard extends View {
 	private int descriptionPatternGroup;
 	private int orbSize;
 	private String customColumn;
+	private String testStatusPattern;
+	private int testStatusGroup;
+	private int logLinesToSearch;
 
 	private transient Pattern descriptionPatternRegex;
 	private transient Table table;
 	private transient long tableCreateTime = -1;
 	private transient static final long CACHE_TIME = 5000; // 5 seconds
 	private transient CustomColumn customColumnCached;
+	private transient Pattern testStatusRegex;
 
 	@DataBoundConstructor
 	public Dashboard(String name) {
@@ -70,7 +74,11 @@ public class Dashboard extends View {
 	}
 
 	private Table generateTable(int count, List<Header> jobs) {
-		Map<String, Map<String, Cell>> cellMap = generateCellMap(count + 10); // Add 10 to help prevent the bottom from being jagged
+		if(this.testStatusRegex == null) {
+			this.testStatusRegex = Pattern.compile(this.testStatusPattern);
+		}
+
+		Map<String, Map<String, Cell>> cellMap = generateCellMap(count + 10, this.testStatusRegex, this.testStatusGroup, this.logLinesToSearch); // Add 10 to help prevent the bottom from being jagged
 		return Table.createFromCellMap(count, jobs, cellMap, this.createCustomColumn());
 	}
 
@@ -108,7 +116,7 @@ public class Dashboard extends View {
 		}
 	}
 
-	private Map<String, Map<String, Cell>> generateCellMap(int count) {
+	private Map<String, Map<String, Cell>> generateCellMap(int count, Pattern testStatusRegex, int testStatusGroup, int logLinesToSearch) {
 		Map<String, Map<String, Cell>> cellMap = new HashMap<String, Map<String, Cell>>();
 		Map<String, Project> projects = ProjectUtils.findProjects();
 		int i = 0;
@@ -125,7 +133,7 @@ public class Dashboard extends View {
 					Matcher matcher = descriptionPatternRegex.matcher(description);
 					if(matcher.find()) {
 						String rowID = matcher.group(descriptionPatternGroup);
-						Cell cell = Cell.createFromBuild(currentBuild, jobHeader.getVisible());
+						Cell cell = Cell.createFromBuild(currentBuild, jobHeader.getVisible(), testStatusRegex, testStatusGroup, logLinesToSearch);
 						if(!cellMap.containsKey(rowID)) {
 							cellMap.put(rowID, new HashMap<String, Cell>());
 						}
@@ -166,6 +174,22 @@ public class Dashboard extends View {
 
 		this.customColumn = request.getParameter("_.customColumn");
 		this.customColumnCached = null;
+
+		this.testStatusPattern = request.getParameter("_.testStatusPattern");
+		this.testStatusRegex = Pattern.compile(this.testStatusPattern);
+		String testStatusGroup = request.getParameter("_.testStatusGroup");
+		if(testStatusGroup == null || testStatusGroup.isEmpty()) {
+			this.testStatusGroup = 0;
+		} else {
+			this.testStatusGroup = Integer.parseInt(testStatusGroup);
+		}
+
+		String logLinesToSearch = request.getParameter("_.logLinesToSearch");
+		if(logLinesToSearch == null || logLinesToSearch.isEmpty()) {
+			this.logLinesToSearch = 100;
+		} else {
+			this.logLinesToSearch = Integer.parseInt(logLinesToSearch);
+		}
 
 		//invalidate cached table
 		table = null;

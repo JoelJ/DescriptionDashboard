@@ -6,7 +6,10 @@ import hudson.scm.ChangeLogSet;
 import hudson.tasks.test.AbstractTestResultAction;
 import jenkins.model.Jenkins;
 
+import java.io.IOException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * User: Joel Johnson
@@ -21,6 +24,28 @@ public class ProjectUtils {
 				return testResultAction.getFailCount();
 			}
 		}
+		return -1;
+	}
+
+	public static int grepFailureCount(Run run, Pattern testStatusRegex, int testStatusGroup, int lines) {
+		List<String> log;
+		try {
+			//for some reason this gives me a warning in IntelliJ
+			//noinspection unchecked
+			log = (List<String>)run.getLog(lines);
+		} catch (IOException e) {
+			return -1;
+		}
+
+		for (int i = log.size() - 1; i >= 0; i--) {
+			String line = log.get(i);
+			Matcher matcher = testStatusRegex.matcher(line);
+			if(matcher.find()) {
+				String result = matcher.group(testStatusGroup);
+				return Integer.parseInt(result);
+			}
+		}
+
 		return -1;
 	}
 
