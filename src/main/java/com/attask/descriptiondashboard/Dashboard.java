@@ -39,6 +39,8 @@ public class Dashboard extends View {
 	private String testStatusPattern;
 	private int testStatusGroup;
 	private int logLinesToSearch;
+	private String injectTop;
+	private String injectBottom;
 
 	private transient Pattern descriptionPatternRegex;
 	private transient Table table;
@@ -201,6 +203,9 @@ public class Dashboard extends View {
 			this.logLinesToSearch = Integer.parseInt(logLinesToSearch);
 		}
 
+		this.injectTop = request.getParameter("_.injectTop");
+		this.injectBottom = request.getParameter("_.injectBottom");
+
 		//invalidate cached table
 		table = null;
 		tableCreateTime = -1;
@@ -260,6 +265,14 @@ public class Dashboard extends View {
 	@Exported
 	public String getCustomColumn() {
 		return customColumn;
+	}
+
+	public String getInjectTop() {
+		return injectTop;
+	}
+
+	public String getInjectBottom() {
+		return injectBottom;
 	}
 
 	@SuppressWarnings("UnusedDeclaration")

@@ -89,7 +89,13 @@
 	<j:set var="currentView" value="${it}"/>
 	<st:include page="viewTabs.jelly" it="${it.owner.viewsTabBar}"/>
 	<div id="DescriptionDashboard">
+		<div class="injectTop">
+			${it.injectTop}
+		</div>
 		<st:include it="${table}" page="render.jelly" />
+		<div class="injectBottom">
+			${it.injectBottom}
+		</div>
 	</div>
 
 	<script src="${rootURL}/plugin/DescriptionDashboard/scripts/main.js"><!--empty--></script>
