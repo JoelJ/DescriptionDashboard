@@ -99,7 +99,6 @@ var DescriptionDashboard = {
 			var hash = split[1];
 			if(hash.startsWith('row-')) {
 				var row = $(hash);
-				var toggle = row.removeClassName;
 				if(doSelect) {
 					row.addClassName('selected');
 				} else {
