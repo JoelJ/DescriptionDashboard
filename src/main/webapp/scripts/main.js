@@ -17,6 +17,8 @@ var DescriptionDashboard = {
 		}
 
 		$('DescriptionDashboard').observe('click', DescriptionDashboard.onRelayClick);
+
+		$(document.body).observe('keyup', DescriptionDashboard.onKeyPressed);
 	},
 
 	onRelayClick: function(e) {
@@ -26,6 +28,13 @@ var DescriptionDashboard = {
 			DescriptionDashboard.onShowAllClicked();
 		} else if(e.target.up('.row')) {
 			DescriptionDashboard.onRowClick(e);
+		}
+	},
+
+	onKeyPressed: function(e) {
+		console.log(e);
+		if(e.keyCode == 27) {
+			DescriptionDashboard.collapseAllRows();
 		}
 	},
 
@@ -115,6 +124,10 @@ var DescriptionDashboard = {
 		if(row == null) {
 			return;
 		}
+		DescriptionDashboard.toggleRow(row);
+	},
+
+	toggleRow: function(row) {
 		var rowId = row.id;
 
 		var extraId = rowId.replace("row-", "extra-");
@@ -147,6 +160,12 @@ var DescriptionDashboard = {
 				}
 			});
 		}
+	},
+
+	collapseAllRows: function() {
+		$$('.row.expanded').each(function(row) {
+			DescriptionDashboard.toggleRow(row);
+		});
 	},
 
 	hackGreenRow: function () {
