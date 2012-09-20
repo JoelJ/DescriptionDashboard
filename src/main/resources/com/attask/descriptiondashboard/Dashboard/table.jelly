@@ -37,7 +37,7 @@
 			</style>
 		</head>
 		<body>
-			<st:include it="${it.getTable()}" page="render.jelly"/>
+			<st:include it="${it.getTable(request)}" page="render.jelly"/>
 		</body>
 	</html>
 </j:jelly>

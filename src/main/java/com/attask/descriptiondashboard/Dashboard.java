@@ -58,25 +58,34 @@ public class Dashboard extends View {
 
 	@Exported
 	public Table getTable() {
-		return getTable(this.count);
+		return getTable(this.count, Filter.getNull());
 	}
 
-	public Table getTable(int count) {
-		if(this.count != count) {
-			//don't use the cache and don't update the cache if the request is a custom size
-			return generateTable(count, this.jobs);
+	public Table getTable(StaplerRequest request) {
+		int count = this.count;
+		String requestCount = request.getParameter("count");
+		if(requestCount != null) {
+			count = Integer.parseInt(requestCount);
+		}
+		return getTable(count, Filter.fromRequest(request));
+	}
+
+	public Table getTable(int count, Filter filter) {
+		if(this.count != count || filter == Filter.getNull()) {
+			//don't use the cache and don't update the cache if the request is a custom size or has a custom filter
+			return generateTable(count, filter, this.jobs);
 		}
 
 		Date startTime = new Date();
 		long time = startTime.getTime();
 		if(table == null || tableCreateTime < 0 || tableCreateTime + CACHE_TIME <= time) {
 			tableCreateTime = time;
-			table = generateTable(count, this.jobs);
+			table = generateTable(count, filter, this.jobs);
 		}
 		return table;
 	}
 
-	private Table generateTable(int count, List<Header> jobs) {
+	private Table generateTable(int count, Filter filter, List<Header> jobs) {
 		if(this.testStatusPattern != null && !this.testStatusPattern.isEmpty()) {
 			if(this.testStatusRegex == null) {
 				this.testStatusRegex = Pattern.compile(this.testStatusPattern);
@@ -85,7 +94,7 @@ public class Dashboard extends View {
 			this.testStatusRegex = null;
 		}
 
-		Map<String, Map<String, Cell>> cellMap = generateCellMap(count + 10, this.testStatusRegex, this.testStatusGroup, this.logLinesToSearch); // Add 10 to help prevent the bottom from being jagged
+		Map<String, Map<String, Cell>> cellMap = generateCellMap(count + 10, filter, this.testStatusRegex, this.testStatusGroup, this.logLinesToSearch); // Add 10 to help prevent the bottom from being jagged
 		return Table.createFromCellMap(count, jobs, cellMap, this.createCustomColumn());
 	}
 
@@ -96,10 +105,12 @@ public class Dashboard extends View {
 			count = Integer.parseInt(request.getParameter("count"));
 		}
 
+		Filter filter = Filter.fromRequest(request);
+
 		response.setContentType("application/json");
 		ServletOutputStream outputStream = response.getOutputStream();
 		try {
-			Table table = getTable(count);
+			Table table = getTable(count, filter);
 			JsonConfig jsonConfig = new JsonConfig();
 			jsonConfig.setIgnoreTransientFields(true);
 			jsonConfig.setCycleDetectionStrategy(new CycleDetectionStrategy() {
@@ -123,7 +134,12 @@ public class Dashboard extends View {
 		}
 	}
 
-	private Map<String, Map<String, Cell>> generateCellMap(int count, Pattern testStatusRegex, int testStatusGroup, int logLinesToSearch) {
+	private Map<String, Map<String, Cell>> generateCellMap(int count, Filter filter, Pattern testStatusRegex, int testStatusGroup, int logLinesToSearch) {
+		assert count > 0 : "Must request more than 0 rows";
+		assert filter != null : "Filter must not be null";
+		assert testStatusGroup >= 0 : "testStatusGroup should be greater than or equal to 0";
+		assert logLinesToSearch >= 0 : "logLinesToSearch should be greater than or equal to 0";
+
 		Map<String, Map<String, Cell>> cellMap = new HashMap<String, Map<String, Cell>>();
 		Map<String, Project> projects = ProjectUtils.findProjects();
 		int i = 0;
@@ -141,15 +157,17 @@ public class Dashboard extends View {
 					if(matcher.find()) {
 						String rowID = matcher.group(descriptionPatternGroup);
 						Cell cell = Cell.createFromBuild(currentBuild, jobHeader.getVisible(), testStatusRegex, testStatusGroup, logLinesToSearch, maxAge);
-						if(!cellMap.containsKey(rowID)) {
-							cellMap.put(rowID, new HashMap<String, Cell>());
+						if(filter.matches(cell)) {
+							if(!cellMap.containsKey(rowID)) {
+								cellMap.put(rowID, new HashMap<String, Cell>());
+							}
+							Map<String, Cell> cells = cellMap.get(rowID);
+							Cell oldCell = cells.get(jobName);
+							if(oldCell == null || oldCell.getDate().before(cell.getDate())) {
+								cells.put(jobName, cell);
+							}
+							i++;
 						}
-						Map<String, Cell> cells = cellMap.get(rowID);
-						Cell oldCell = cells.get(jobName);
-						if(oldCell == null || oldCell.getDate().before(cell.getDate())) {
-							cells.put(jobName, cell);
-						}
-						i++;
 					}
 				}
 
@@ -190,11 +208,15 @@ public class Dashboard extends View {
 		} else {
 			this.testStatusRegex = null;
 		}
+
 		String testStatusGroup = request.getParameter("_.testStatusGroup");
 		if(testStatusGroup == null || testStatusGroup.isEmpty()) {
 			this.testStatusGroup = 0;
 		} else {
 			this.testStatusGroup = Integer.parseInt(testStatusGroup);
+			if(this.testStatusGroup < 0) {
+				this.testStatusGroup = 0;
+			}
 		}
 
 		String logLinesToSearch = request.getParameter("_.logLinesToSearch");
@@ -202,6 +224,9 @@ public class Dashboard extends View {
 			this.logLinesToSearch = 100;
 		} else {
 			this.logLinesToSearch = Integer.parseInt(logLinesToSearch);
+			if(this.logLinesToSearch <= 1) {
+				this.logLinesToSearch = 1;
+			}
 		}
 
 		this.injectTop = request.getParameter("_.injectTop");

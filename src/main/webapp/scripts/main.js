@@ -56,7 +56,7 @@ var DescriptionDashboard = {
 			id.push(currentlyExpanded[i].id);
 		}
 
-		var url = window.location.pathname + '/tableOnly';
+		var url = window.location.pathname + '/tableOnly' + window.location.search;
 		new Ajax.Request(url, {
 			method: 'get',
 			evalJS: 'false',
