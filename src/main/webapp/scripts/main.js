@@ -14,6 +14,8 @@ var DescriptionDashboard = {
 
 		if(window.location.hash == '#showAll') {
 			DescriptionDashboard.showAllColumns();
+		} else if(window.location.hash.indexOf('#fullScreen') >= 0) {
+			DescriptionDashboard.fillScreen();
 		}
 
 		$('DescriptionDashboard').observe('click', DescriptionDashboard.onRelayClick);
@@ -94,6 +96,8 @@ var DescriptionDashboard = {
 			DescriptionDashboard.showAllColumns();
 		} else if(newUrl.endsWith('#hideAll')) {
 			DescriptionDashboard.hideAllColumns();
+		} else if(newUrl.indexOf('#fullScreen') >= 0){
+			DescriptionDashboard.fillScreen();
 		} else {
 			var oldUrl = event.oldURL;
 			DescriptionDashboard.toggleRowSelect(oldUrl, false);
@@ -192,13 +196,26 @@ var DescriptionDashboard = {
 	},
 
 	onFullScreenClicked: function() {
-		var div = $('DescriptionDashboard');
-		if(div.webkitRequestFullScreen) {
-			div.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+		var dashboard = $('DescriptionDashboard');
+		if(dashboard.webkitRequestFullScreen) {
+			dashboard.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
 		}
-		if(div.mozRequestFullScreen) {
-			div.mozRequestFullScreen();
+		if(dashboard.mozRequestFullScreen) {
+			dashboard.mozRequestFullScreen();
 		}
+	},
+
+	fillScreen: function() {
+		var dashboard = $('DescriptionDashboard');
+		dashboard.addClassName('fullScreen');
+
+		var links = $$('#DescriptionDashboard a');
+		links.each(function(link) {
+			link.setAttribute('target', '_blank');
+			console.log(link);
+		});
+
+		$('side-panel').hide();
 	},
 
 	showAllColumns: function() {
