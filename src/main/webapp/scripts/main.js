@@ -26,6 +26,8 @@ var DescriptionDashboard = {
 			//let normal 'a' tags click as normal
 		} else if(e.target.hasClassName('showAll')) {
 			DescriptionDashboard.onShowAllClicked();
+		} else if(e.target.hasClassName('fullScreen')) {
+			DescriptionDashboard.onFullScreenClicked();
 		} else if(e.target.up('.row')) {
 			DescriptionDashboard.onRowClick(e);
 		}
@@ -186,6 +188,16 @@ var DescriptionDashboard = {
 			window.location.hash = window.location.hash.replace("#hideAll", "#showAll");
 		} else {
 			window.location.hash = window.location.hash + "#showAll";
+		}
+	},
+
+	onFullScreenClicked: function() {
+		var div = $('DescriptionDashboard');
+		if(div.webkitRequestFullScreen) {
+			div.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+		}
+		if(div.mozRequestFullScreen) {
+			div.mozRequestFullScreen();
 		}
 	},
 
