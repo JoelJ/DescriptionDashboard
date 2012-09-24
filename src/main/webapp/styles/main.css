@@ -27,7 +27,7 @@ body.loading {
 	background-color: white;
 }
 
-#DescriptionDashboard.fullScreen {
+#DescriptionDashboard.inFullScreen {
 	position: absolute;
 	top: 0;
 	left: 0;

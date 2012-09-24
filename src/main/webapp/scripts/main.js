@@ -12,9 +12,10 @@ var DescriptionDashboard = {
 			window.scrollBy(0,-50);
 		}
 
-		if(window.location.hash == '#showAll') {
+		if(window.location.hash.indexOf('#showAll') >= 0) {
 			DescriptionDashboard.showAllColumns();
-		} else if(window.location.hash.indexOf('#fullScreen') >= 0) {
+		}
+		if(window.location.hash.indexOf('#fullScreen') >= 0) {
 			DescriptionDashboard.fillScreen();
 		}
 
@@ -78,7 +79,7 @@ var DescriptionDashboard = {
 
 		DescriptionDashboard.toggleRowSelect(document.URL, true);
 
-		if(window.location.hash == '#showAll') {
+		if(window.location.hash.indexOf('#showAll') >= 0) {
 			DescriptionDashboard.showAllColumns();
 		}
 
@@ -91,14 +92,22 @@ var DescriptionDashboard = {
 	},
 
 	onHashChange: function(event) {
+		var found = false;
 		var newUrl = event.newURL;
-		if(newUrl.endsWith('#showAll')) {
+		if(newUrl.indexOf('#showAll') >= 0) {
 			DescriptionDashboard.showAllColumns();
-		} else if(newUrl.endsWith('#hideAll')) {
+			found = true;
+		}
+		if(newUrl.indexOf('#hideAll') >= 0) {
 			DescriptionDashboard.hideAllColumns();
-		} else if(newUrl.indexOf('#fullScreen') >= 0){
+			found = true;
+		}
+		if(newUrl.indexOf('#fullScreen') >= 0){
 			DescriptionDashboard.fillScreen();
-		} else {
+			found = true;
+		}
+
+		if(!found) {
 			var oldUrl = event.oldURL;
 			DescriptionDashboard.toggleRowSelect(oldUrl, false);
 			if(DescriptionDashboard.toggleRowSelect(newUrl, true)) {
@@ -207,7 +216,7 @@ var DescriptionDashboard = {
 
 	fillScreen: function() {
 		var dashboard = $('DescriptionDashboard');
-		dashboard.addClassName('fullScreen');
+		dashboard.addClassName('inFullScreen');
 
 		var links = $$('#DescriptionDashboard a');
 		links.each(function(link) {
