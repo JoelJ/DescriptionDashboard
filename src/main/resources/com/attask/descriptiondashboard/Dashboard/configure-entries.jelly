@@ -61,6 +61,9 @@
 	<f:entry title="# Log lines to check" field="logLinesToSearch">
 		<f:textbox/>
 	</f:entry>
+	<f:entry title="Cache Table Time (seconds)" field="cacheTime">
+		<f:textbox/>
+	</f:entry>
 	<f:entry title="Status Image Size" field="orbSize">
 		<select name="_.orbSize">
 			<option value="${it.orbSize}">Current (${it.orbSize}x${it.orbSize})</option>

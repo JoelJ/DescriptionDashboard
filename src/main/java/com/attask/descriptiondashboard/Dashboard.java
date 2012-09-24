@@ -46,7 +46,7 @@ public class Dashboard extends View {
 	private transient Pattern descriptionPatternRegex;
 	private transient Table table;
 	private transient long tableCreateTime = -1;
-	private transient static final long CACHE_TIME = 5000; // 5 seconds
+	private transient long cacheTime; // 5 seconds
 	private transient CustomColumn customColumnCached;
 	private transient Pattern testStatusRegex;
 
@@ -71,14 +71,14 @@ public class Dashboard extends View {
 	}
 
 	public Table getTable(int count, Filter filter) {
-		if(this.count != count || filter == Filter.getNull()) {
+		if(this.count != count || filter != Filter.getNull()) {
 			//don't use the cache and don't update the cache if the request is a custom size or has a custom filter
 			return generateTable(count, filter, this.jobs);
 		}
 
 		Date startTime = new Date();
 		long time = startTime.getTime();
-		if(table == null || tableCreateTime < 0 || tableCreateTime + CACHE_TIME <= time) {
+		if(table == null || tableCreateTime < 0 || cacheTime <= 0 || tableCreateTime + (cacheTime*1000) <= time) {
 			tableCreateTime = time;
 			table = generateTable(count, filter, this.jobs);
 		}
@@ -242,6 +242,13 @@ public class Dashboard extends View {
 		//invalidate cached table
 		table = null;
 		tableCreateTime = -1;
+
+		String cacheTime = request.getParameter("_.cacheTime");
+		if(cacheTime == null || cacheTime.isEmpty()) {
+			this.cacheTime = 0;
+		} else {
+			this.cacheTime = Integer.parseInt(cacheTime);
+		}
 	}
 
 	@SuppressWarnings("UnusedDeclaration")
