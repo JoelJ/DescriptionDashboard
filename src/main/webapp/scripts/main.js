@@ -25,7 +25,7 @@ var DescriptionDashboard = {
 	},
 
 	onRelayClick: function(e) {
-		if(e.target.tagName == "A" || e.target.hasClassName('status')) {
+		if(e.target.tagName == "A" || e.target.hasClassName('status') || e.target.up('.customColumn')) {
 			//let normal 'a' tags click as normal
 		} else if(e.target.hasClassName('showAll')) {
 			DescriptionDashboard.onShowAllClicked();
@@ -39,7 +39,9 @@ var DescriptionDashboard = {
 	onKeyPressed: function(e) {
 		console.log(e);
 		if(e.keyCode == 27) {
-			DescriptionDashboard.collapseAllRows();
+			if(!DescriptionDashboard.collapseAllRows()) {
+				window.location.hash = window.location.hash.replace("#showAll", "#hideAll");
+			}
 		}
 	},
 
@@ -178,9 +180,15 @@ var DescriptionDashboard = {
 	},
 
 	collapseAllRows: function() {
-		$$('.row.expanded').each(function(row) {
-			DescriptionDashboard.toggleRow(row);
-		});
+		var expandedRows = $$('.row.expanded');
+		if(expandedRows.length > 0) {
+			expandedRows.each(function(row) {
+				DescriptionDashboard.toggleRow(row);
+			});
+			return true;
+		} else {
+			return false;
+		}
 	},
 
 	hackGreenRow: function () {
