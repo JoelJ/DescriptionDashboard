@@ -275,8 +275,8 @@ public class Dashboard extends View {
 		Set<SimpleUser> users = new HashSet<SimpleUser>();
 		for (User user : User.getAll()) {
 			String imageUrl = CustomGreenUserProperty.getImgUrl(user);
-			if(imageUrl != null) {
-				users.add(new SimpleUser(user.getId(), user.getFullName(), imageUrl));
+			if(imageUrl != null && !imageUrl.trim().isEmpty()) {
+				users.add(new SimpleUser(user.getId(), user.getFullName(), imageUrl.trim()));
 			}
 		}
 		return users;
@@ -313,6 +313,10 @@ public class Dashboard extends View {
 
 	public String getInjectBottom() {
 		return injectBottom;
+	}
+
+	public long getCacheTime() {
+		return cacheTime;
 	}
 
 	@SuppressWarnings("UnusedDeclaration")
