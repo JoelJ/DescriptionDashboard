@@ -37,7 +37,6 @@ var DescriptionDashboard = {
 	},
 
 	onKeyPressed: function(e) {
-		console.log(e);
 		if(e.keyCode == 27) {
 			if(!DescriptionDashboard.collapseAllRows()) {
 				window.location.hash = window.location.hash.replace("#showAll", "#hideAll");
@@ -48,6 +47,10 @@ var DescriptionDashboard = {
 	forceRefresh: function() {
 		DescriptionDashboard.killRefresh();
 		DescriptionDashboard.enableAutoRefresh();
+
+		if(window.location.search.indexOf('disableAutoRefresh=true') <= -1) {
+			DescriptionDashboard.killRefresh();
+		}
 	},
 
 	killRefresh: function() {
@@ -167,6 +170,7 @@ var DescriptionDashboard = {
 				evalJS: 'false',
 				onSuccess: function(transport) {
 					var resultBody = transport.responseText;
+					resultBody = DescriptionDashboard.onDrawerRendered(resultBody);
 					extra.down('td').innerHTML = resultBody;
 					$(document.body).removeClassName('loading');
 				},
@@ -177,6 +181,10 @@ var DescriptionDashboard = {
 				}
 			});
 		}
+	},
+
+	onDrawerRendered: function(html) {
+		return html;
 	},
 
 	collapseAllRows: function() {
