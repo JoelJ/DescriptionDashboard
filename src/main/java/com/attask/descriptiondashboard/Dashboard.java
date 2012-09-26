@@ -71,26 +71,37 @@ public class Dashboard extends View {
 	}
 
 	public Table getTable(int count, Filter filter) {
-		if(this.count != count || filter != Filter.getNull()) {
-			//don't use the cache and don't update the cache if the request is a custom size or has a custom filter
-			return generateTable(count, filter, this.jobs);
-		}
+		try {
+			if(this.count != count || filter != Filter.getNull()) {
+				//don't use the cache and don't update the cache if the request is a custom size or has a custom filter
+				Logger.finest("not using table cache. this.count=" + this.count + "; count=" + count + "; filter==null? " + (filter == Filter.getNull()));
+				return generateTable(count, filter, this.jobs);
+			}
 
-		Date startTime = new Date();
-		long time = startTime.getTime();
-		if(table == null || tableCreateTime < 0 || cacheTime <= 0 || tableCreateTime + (cacheTime*1000) <= time) {
-			tableCreateTime = time;
-			table = generateTable(count, filter, this.jobs);
+			Date startTime = new Date();
+			long time = startTime.getTime();
+			if(table == null || tableCreateTime < 0 || cacheTime <= 0 || tableCreateTime + (cacheTime*1000) <= time) {
+				Logger.finest("table cache expired. Rebuilding. cacheTime="+cacheTime + "seconds; time=" + time);
+				tableCreateTime = time;
+				table = generateTable(count, filter, this.jobs);
+			} else {
+				Logger.finest("Using table cache. cacheTime="+cacheTime + "; time=" + time);
+			}
+			return table;
+		} catch(Exception e) {
+			Logger.warn("There was an error while creating the table", e);
+			return ErrorTable.createErrorTable("There was an error while creating the table", e);
 		}
-		return table;
 	}
 
 	private Table generateTable(int count, Filter filter, List<Header> jobs) {
 		if(this.testStatusPattern != null && !this.testStatusPattern.isEmpty()) {
 			if(this.testStatusRegex == null) {
 				this.testStatusRegex = Pattern.compile(this.testStatusPattern);
+				Logger.finest("re-compiling testStatusPattern");
 			}
 		} else {
+			Logger.finest("Pattern is null, so not compiling.");
 			this.testStatusRegex = null;
 		}
 
@@ -102,7 +113,9 @@ public class Dashboard extends View {
 	public void doJson(StaplerRequest request, StaplerResponse response) throws IOException {
 		int count = this.count;
 		if(request.getParameterMap().containsKey("count")) {
-			count = Integer.parseInt(request.getParameter("count"));
+			String countParam = request.getParameter("count");
+			Logger.finest("parameter 'count' provided: " + countParam);
+			count = Integer.parseInt(countParam);
 		}
 
 		Filter filter = Filter.fromRequest(request);
@@ -127,7 +140,7 @@ public class Dashboard extends View {
 			JSONObject jsonObject = JSONObject.fromObject(table, jsonConfig);
 			outputStream.print(jsonObject.toString());
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logger.error("unexpected exception when generating json", e);
 		} finally {
 			outputStream.flush();
 			outputStream.close();
@@ -151,6 +164,7 @@ public class Dashboard extends View {
 				String description = currentBuild.getDescription();
 				if(description != null) {
 					if(descriptionPatternRegex == null) {
+						Logger.finest("descriptionPatternRegex not compiled");
 						descriptionPatternRegex = Pattern.compile(descriptionPattern);
 					}
 					Matcher matcher = descriptionPatternRegex.matcher(description);
@@ -174,6 +188,7 @@ public class Dashboard extends View {
 				currentBuild = currentBuild.getPreviousBuild();
 
 				if(i >= count) {
+					Logger.finest("Exceeded the count for " + jobHeader.getName() + "(" + i + ")");
 					break;
 				}
 			}
@@ -203,28 +218,34 @@ public class Dashboard extends View {
 		this.testStatusPattern = request.getParameter("_.testStatusPattern");
 		if(this.testStatusPattern != null && !this.testStatusPattern.isEmpty()) {
 			if(this.testStatusRegex == null) {
+				Logger.finest("Precompiling testStatusRegex.");
 				this.testStatusRegex = Pattern.compile(this.testStatusPattern);
 			}
 		} else {
+			Logger.finest("No testStatusRegex provided.");
 			this.testStatusRegex = null;
 		}
 
 		String testStatusGroup = request.getParameter("_.testStatusGroup");
 		if(testStatusGroup == null || testStatusGroup.isEmpty()) {
+			Logger.finest("defaulting testStatusGroup to 0.");
 			this.testStatusGroup = 0;
 		} else {
 			this.testStatusGroup = Integer.parseInt(testStatusGroup);
 			if(this.testStatusGroup < 0) {
+				Logger.finest("Negative number provided. defaulting testStatusGroup to 0.");
 				this.testStatusGroup = 0;
 			}
 		}
 
 		String logLinesToSearch = request.getParameter("_.logLinesToSearch");
 		if(logLinesToSearch == null || logLinesToSearch.isEmpty()) {
+			Logger.finest("defaulting logLinesToSearch to 100");
 			this.logLinesToSearch = 100;
 		} else {
 			this.logLinesToSearch = Integer.parseInt(logLinesToSearch);
 			if(this.logLinesToSearch <= 1) {
+				Logger.finest("non-positive number provided. Defaulting logLinesToSearch to 1");
 				this.logLinesToSearch = 1;
 			}
 		}
@@ -236,6 +257,7 @@ public class Dashboard extends View {
 		if(maxAge != null && !maxAge.isEmpty()) {
 			this.maxAge = Integer.parseInt(maxAge);
 		} else {
+			Logger.finest("defaulting maxAge to 0");
 			this.maxAge = 0;
 		}
 
@@ -245,6 +267,7 @@ public class Dashboard extends View {
 
 		String cacheTime = request.getParameter("_.cacheTime");
 		if(cacheTime == null || cacheTime.isEmpty()) {
+			Logger.finest("defaulting cacheTime to 0");
 			this.cacheTime = 0;
 		} else {
 			this.cacheTime = Integer.parseInt(cacheTime);
@@ -322,10 +345,12 @@ public class Dashboard extends View {
 	@SuppressWarnings("UnusedDeclaration")
 	public CustomColumn createCustomColumn()  {
 		if(customColumnCached != null) {
+			Logger.finest("using cached custom column");
 			return customColumnCached;
 		}
 
 		if (getCustomColumn() == null || getCustomColumn().isEmpty()) {
+			Logger.finest("no custom column defined");
 			return null;
 		}
 
@@ -336,10 +361,13 @@ public class Dashboard extends View {
 			this.customColumnCached = customColumn;
 			return customColumn;
 		} catch (ClassNotFoundException e) {
+			Logger.error("Exception was thrown while creating custom column", e);
 			throw new RuntimeException(e);
 		} catch (InstantiationException e) {
+			Logger.error("Exception was thrown while creating custom column", e);
 			throw new RuntimeException(e);
 		} catch (IllegalAccessException e) {
+			Logger.error("Exception was thrown while creating custom column", e);
 			throw new RuntimeException(e);
 		}
 

@@ -43,13 +43,14 @@ public class Table implements Serializable {
 			}
 		});
 		if(rows.size() > maxRowCount) {
+			Logger.finer("rows.size() > maxRowCount... truncating. rows.size()="+rows.size() + "; maxRowCount="+maxRowCount);
 			rows = rows.subList(0, maxRowCount);
 		}
 
 		return new Table(jobs, rows, customColumn);
 	}
 
-	private Table(List<Header> headers, List<Row> rows, CustomColumn customColumn) {
+	protected Table(List<Header> headers, List<Row> rows, CustomColumn customColumn) {
 		this.headers = Collections.unmodifiableList(headers);
 		this.rows = Collections.unmodifiableList(rows);
 		this.customColumn = customColumn;
