@@ -142,8 +142,8 @@ public class Dashboard extends View {
 
 		Map<String, Map<String, Cell>> cellMap = new HashMap<String, Map<String, Cell>>();
 		Map<String, Project> projects = ProjectUtils.findProjects();
-		int i = 0;
 		for (Header jobHeader : jobs) {
+			int i = 0;
 			String jobName = jobHeader.getName();
 			Project project = projects.get(jobName);
 			Run currentBuild = project.getLastBuild();
