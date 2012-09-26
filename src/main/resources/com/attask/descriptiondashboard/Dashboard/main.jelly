@@ -31,9 +31,6 @@
 		}
 
 		img.multipleCommitters {
-			max-width: 24px;
-			height: 100%;
-			float: left;
 			background-image: url('${rootURL}/static/432ed95f/images/48x48/user.png');
 		}
 
