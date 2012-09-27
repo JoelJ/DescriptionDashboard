@@ -51,7 +51,7 @@ public class Cell implements Serializable {
 		}
 		String resultString = result == null ? "RUNNING" : result.toString();
 		Set<SimpleUser> committers = ProjectUtils.findCommitters(build);
-		boolean critical = ProjectUtils.hasAgeOver(build, maxAge);
+		boolean critical = false;//ProjectUtils.hasAgeOver(build, maxAge);
 		return new Cell(name, failureCount, resultString, description, build.getTime(), build.getParent().getName(), build.getNumber(), running, committers, visible, critical);
 	}
 
