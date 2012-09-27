@@ -4,8 +4,13 @@
 
 img.multipleCommitters {
 	position: absolute;
-	height: 100%;
-	opacity: 0.15;
+	height: 75%;
+	opacity: 0.3;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	margin-top: auto;
+	margin-bottom: auto;
 }
 
 img.detailsButton {
@@ -147,8 +152,8 @@ img {
 }
 
 .running img.status {
-	-webkit-animation: pulse 1s infinite normal;
-	-moz-animation: pulseFF 1s infinite normal;
+	-webkit-animation: pulse 1.5s infinite normal;
+	-moz-animation: pulseFF 1.5s infinite normal;
 }
 
 .details .date {
