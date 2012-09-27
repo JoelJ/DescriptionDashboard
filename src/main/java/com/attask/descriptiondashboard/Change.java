@@ -19,15 +19,17 @@ public class Change implements Serializable {
 	private final long timestamp;
 	private final String comment;
 	private final Set<String> changedFiles;
+	private final String dateFormatted;
 
 	public static Change createChangeFromGitChangeSet(GitChangeSet gitChangeSet) {
 		String revision = gitChangeSet.getId();
 		User author = gitChangeSet.getAuthor();
 		String comment = gitChangeSet.getComment();
 		long timestamp = gitChangeSet.getTimestamp();
+		String dateFormatted = gitChangeSet.getDate();
 		Collection<String> affectedPaths = gitChangeSet.getAffectedPaths();
 
-		return new Change(revision, author, comment, timestamp, affectedPaths);
+		return new Change(revision, author, comment, timestamp, dateFormatted, affectedPaths);
 	}
 
 	public static Change createChangeFromChangeSet(ChangeLogSet.Entry changeSet) {
@@ -35,17 +37,19 @@ public class Change implements Serializable {
 		User author = changeSet.getAuthor();
 		String comment = changeSet.getMsg();
 		long timestamp = changeSet.getTimestamp();
+		String dateFormatted = Row.SIMPLE_DATE_FORMAT.format(new Date(timestamp));
 		Collection<String> affectedPaths = changeSet.getAffectedPaths();
 
-		return new Change(revision, author, comment, timestamp, affectedPaths);
+		return new Change(revision, author, comment, timestamp, dateFormatted, affectedPaths);
 	}
 
-	public Change(String revision, User author, String comment, long timestamp, Collection<String> changedFiles) {
+	public Change(String revision, User author, String comment, long timestamp, String dateFormatted, Collection<String> changedFiles) {
 		this.comment = comment;
 		this.timestamp = timestamp;
 		this.author = author;
 		this.revision = revision;
 		this.changedFiles = Collections.unmodifiableSet(new TreeSet<String>(changedFiles));
+		this.dateFormatted = dateFormatted;
 	}
 
 	public String getRevision() {
@@ -61,9 +65,7 @@ public class Change implements Serializable {
 	}
 
 	public String findTimestampFormatted() {
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm z", Locale.US);
-		String format = simpleDateFormat.format(new Date(getTimestamp()));
-		return format;
+		return dateFormatted;
 	}
 
 	public String getComment() {
