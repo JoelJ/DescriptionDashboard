@@ -17,6 +17,8 @@ import java.util.*;
  */
 @ExportedBean
 public class Row implements Serializable {
+	public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd hh:mm z", Locale.US);
+
 	private final String id;
 	private final String description;
 	private final Map<String, Cell> cells;
@@ -26,6 +28,8 @@ public class Row implements Serializable {
 	private final boolean criticalRequired;
 	private final boolean criticalAll;
 	private final boolean running;
+	private final Date date;
+	private final String formattedDate;
 
 	public Row(String id, String description, Map<String, Cell> cells, List<Header> headers, CustomColumn customColumn) {
 		if(id == null) {
@@ -77,6 +81,17 @@ public class Row implements Serializable {
 		this.criticalAll = !running && criticalAll;
 		this.running = running;
 		this.totalFailures = totalFailures;
+
+		Date date = new Date(0);
+		for (Header header : headers) {
+			Cell cell = cells.get(header.getName());
+			if (cell != null) {
+				date = cell.getDate();
+			}
+		}
+
+		this.date = date;
+		this.formattedDate = SIMPLE_DATE_FORMAT.format(date);
 	}
 
 	@Exported
@@ -126,22 +141,15 @@ public class Row implements Serializable {
 	}
 
 	public Date findDate() {
-		for (Header header : headers) {
-			Cell cell = cells.get(header.getName());
-			if (cell != null) {
-				return cell.getDate();
-			}
-		}
-		return new Date(0);
+		return date;
 	}
 
 	public String findDateFormatted() {
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm z", Locale.US);
-		return simpleDateFormat.format(findDate());
+		return formattedDate;
 	}
 
 	public String findDatePretty() {
-		long duration = new GregorianCalendar().getTimeInMillis()-findDate().getTime();
+		long duration = new Date().getTime()-findDate().getTime();
 		return Util.getPastTimeString(duration);
 	}
 
