@@ -192,10 +192,8 @@ public class Dashboard extends View {
 
 				String description = currentBuild.getDescription();
 				if(description != null) {
-					Matcher matcher = descriptionPatternRegex.matcher(description);
-					if(matcher.find()) {
-						String rowID = matcher.group(descriptionPatternGroup);
-
+					String rowID = findMatch(descriptionPatternRegex, description, descriptionPatternGroup);
+					if(rowID != null) {
 						long startCell = new Date().getTime();
 
 						Cell cell = Cell.createFromBuild(currentBuild, jobHeader.getVisible(), testStatusRegex, testStatusGroup, logLinesToSearch, maxAge);
@@ -235,6 +233,14 @@ public class Dashboard extends View {
 			}
 		}
 		return cellMap;
+	}
+
+	private String findMatch(Pattern pattern, String text, int group) {
+		Matcher matcher = pattern.matcher(text);
+		if(matcher.find()) {
+			return matcher.group(group);
+		}
+		return null;
 	}
 
 	@Override
