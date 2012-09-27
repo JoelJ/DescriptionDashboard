@@ -105,8 +105,25 @@ public class Dashboard extends View {
 			this.testStatusRegex = null;
 		}
 
+		long start = new Date().getTime();
 		Map<String, Map<String, Cell>> cellMap = generateCellMap(count + 10, filter, this.testStatusRegex, this.testStatusGroup, this.logLinesToSearch); // Add 10 to help prevent the bottom from being jagged
-		return Table.createFromCellMap(count, jobs, cellMap, this.createCustomColumn());
+		long total = new Date().getTime() - start;
+		if(total > 1000) {
+			Logger.error("generateCellMap took " + total + " ms");
+		} else {
+			Logger.finest("generateCellMap took " + total + " ms");
+		}
+
+		start = new Date().getTime();
+		Table fromCellMap = Table.createFromCellMap(count, jobs, cellMap, this.createCustomColumn());
+		total = new Date().getTime() - start;
+		if(total > 1000) {
+			Logger.error("createFromCellMap took " + total + "ms");
+		} else {
+			Logger.finest("createFromCellMap took " + total + "ms");
+		}
+
+		return fromCellMap;
 	}
 
 	@WebMethod(name = "json")
@@ -153,24 +170,51 @@ public class Dashboard extends View {
 		assert testStatusGroup >= 0 : "testStatusGroup should be greater than or equal to 0";
 		assert logLinesToSearch >= 0 : "logLinesToSearch should be greater than or equal to 0";
 
+		if(descriptionPatternRegex == null) {
+			Logger.finest("descriptionPatternRegex not compiled");
+			descriptionPatternRegex = Pattern.compile(descriptionPattern);
+		}
+
 		Map<String, Map<String, Cell>> cellMap = new HashMap<String, Map<String, Cell>>();
 		Map<String, Project> projects = ProjectUtils.findProjects();
 		for (Header jobHeader : jobs) {
-			int i = 0;
+			Logger.finest("Starting " + jobHeader.getName());
+			long start = new Date().getTime();
+
+			int foundCount = 0;
 			String jobName = jobHeader.getName();
 			Project project = projects.get(jobName);
-			Run currentBuild = project.getLastBuild();
-			while(currentBuild != null) {
+
+			int iterated = 0;
+			for(int i = project.getNextBuildNumber() - 1; i >= 0; i--) {
+				Run currentBuild = project.getBuildByNumber(i);
+				if(currentBuild == null) {
+					continue;
+				}
+
+				iterated++;
+
+				Logger.finest("Starting " + currentBuild.getFullDisplayName());
+				long startBuild = new Date().getTime();
+
 				String description = currentBuild.getDescription();
 				if(description != null) {
-					if(descriptionPatternRegex == null) {
-						Logger.finest("descriptionPatternRegex not compiled");
-						descriptionPatternRegex = Pattern.compile(descriptionPattern);
-					}
 					Matcher matcher = descriptionPatternRegex.matcher(description);
 					if(matcher.find()) {
 						String rowID = matcher.group(descriptionPatternGroup);
+
+						Logger.finest("Generating cell " + currentBuild.getFullDisplayName());
+						long startCell = new Date().getTime();
+
 						Cell cell = Cell.createFromBuild(currentBuild, jobHeader.getVisible(), testStatusRegex, testStatusGroup, logLinesToSearch, maxAge);
+
+						long totalCell = new Date().getTime() - startCell;
+						if(totalCell > 1000) {
+							Logger.error("finished generating cell for " + currentBuild.getFullDisplayName() + " in " + totalCell + "ms.");
+						} else {
+							Logger.finest("finished generating cell for " + currentBuild.getFullDisplayName() + " in " + totalCell + "ms.");
+						}
+
 						if(filter.matches(cell)) {
 							if(!cellMap.containsKey(rowID)) {
 								cellMap.put(rowID, new HashMap<String, Cell>());
@@ -180,17 +224,29 @@ public class Dashboard extends View {
 							if(oldCell == null || oldCell.getDate().before(cell.getDate())) {
 								cells.put(jobName, cell);
 							}
-							i++;
+							foundCount++;
 						}
 					}
 				}
 
-				currentBuild = currentBuild.getPreviousBuild();
+				long totalBuild = new Date().getTime() - startBuild;
+				if(totalBuild > 1000) {
+					Logger.error("finished " + currentBuild.getFullDisplayName() + " in " + totalBuild + "ms.");
+				} else {
+					Logger.finest("finished " + currentBuild.getFullDisplayName() + " in " + totalBuild + "ms.");
+				}
 
-				if(i >= count) {
-					Logger.finest("Exceeded the count for " + jobHeader.getName() + "(" + i + ")");
+				if(foundCount >= count) {
+					Logger.finest("Exceeded the count for " + jobHeader.getName() + "(" + foundCount + ")");
 					break;
 				}
+			}
+
+			long total = new Date().getTime() - start;
+			if(total > 1000) {
+				Logger.error("finished " + jobHeader.getName() + " in " + total + "ms. Iterated: " + iterated);
+			} else {
+				Logger.finest("finished " + jobHeader.getName() + " in " + total + "ms. Iterated: " + iterated);
 			}
 		}
 		return cellMap;
