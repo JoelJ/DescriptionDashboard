@@ -46,7 +46,7 @@ public class Dashboard extends View {
 	private transient Pattern descriptionPatternRegex;
 	private transient Table table;
 	private transient long tableCreateTime = -1;
-	private transient long cacheTime; // 5 seconds
+	private transient long cacheTime;
 	private transient CustomColumn customColumnCached;
 	private transient Pattern testStatusRegex;
 
@@ -101,7 +101,6 @@ public class Dashboard extends View {
 				Logger.finest("re-compiling testStatusPattern");
 			}
 		} else {
-			Logger.finest("Pattern is null, so not compiling.");
 			this.testStatusRegex = null;
 		}
 
@@ -110,8 +109,6 @@ public class Dashboard extends View {
 		long total = new Date().getTime() - start;
 		if(total > 1000) {
 			Logger.error("generateCellMap took " + total + " ms");
-		} else {
-			Logger.finest("generateCellMap took " + total + " ms");
 		}
 
 		start = new Date().getTime();
@@ -119,8 +116,6 @@ public class Dashboard extends View {
 		total = new Date().getTime() - start;
 		if(total > 1000) {
 			Logger.error("createFromCellMap took " + total + "ms");
-		} else {
-			Logger.finest("createFromCellMap took " + total + "ms");
 		}
 
 		return fromCellMap;
@@ -171,14 +166,13 @@ public class Dashboard extends View {
 		assert logLinesToSearch >= 0 : "logLinesToSearch should be greater than or equal to 0";
 
 		if(descriptionPatternRegex == null) {
-			Logger.finest("descriptionPatternRegex not compiled");
+			Logger.info("descriptionPatternRegex not compiled");
 			descriptionPatternRegex = Pattern.compile(descriptionPattern);
 		}
 
 		Map<String, Map<String, Cell>> cellMap = new HashMap<String, Map<String, Cell>>();
 		Map<String, Project> projects = ProjectUtils.findProjects();
 		for (Header jobHeader : jobs) {
-			Logger.finest("Starting " + jobHeader.getName());
 			long start = new Date().getTime();
 
 			int foundCount = 0;
@@ -194,7 +188,6 @@ public class Dashboard extends View {
 
 				iterated++;
 
-				Logger.finest("Starting " + currentBuild.getFullDisplayName());
 				long startBuild = new Date().getTime();
 
 				String description = currentBuild.getDescription();
@@ -203,7 +196,6 @@ public class Dashboard extends View {
 					if(matcher.find()) {
 						String rowID = matcher.group(descriptionPatternGroup);
 
-						Logger.finest("Generating cell " + currentBuild.getFullDisplayName());
 						long startCell = new Date().getTime();
 
 						Cell cell = Cell.createFromBuild(currentBuild, jobHeader.getVisible(), testStatusRegex, testStatusGroup, logLinesToSearch, maxAge);
@@ -211,8 +203,6 @@ public class Dashboard extends View {
 						long totalCell = new Date().getTime() - startCell;
 						if(totalCell > 1000) {
 							Logger.error("finished generating cell for " + currentBuild.getFullDisplayName() + " in " + totalCell + "ms.");
-						} else {
-							Logger.finest("finished generating cell for " + currentBuild.getFullDisplayName() + " in " + totalCell + "ms.");
 						}
 
 						if(filter.matches(cell)) {
@@ -232,12 +222,9 @@ public class Dashboard extends View {
 				long totalBuild = new Date().getTime() - startBuild;
 				if(totalBuild > 1000) {
 					Logger.error("finished " + currentBuild.getFullDisplayName() + " in " + totalBuild + "ms.");
-				} else {
-					Logger.finest("finished " + currentBuild.getFullDisplayName() + " in " + totalBuild + "ms.");
 				}
 
 				if(foundCount >= count) {
-					Logger.finest("Exceeded the count for " + jobHeader.getName() + "(" + foundCount + ")");
 					break;
 				}
 			}
@@ -245,8 +232,6 @@ public class Dashboard extends View {
 			long total = new Date().getTime() - start;
 			if(total > 1000) {
 				Logger.error("finished " + jobHeader.getName() + " in " + total + "ms. Iterated: " + iterated);
-			} else {
-				Logger.finest("finished " + jobHeader.getName() + " in " + total + "ms. Iterated: " + iterated);
 			}
 		}
 		return cellMap;
