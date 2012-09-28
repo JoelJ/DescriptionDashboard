@@ -87,6 +87,7 @@ public class Row implements Serializable {
 			Cell cell = cells.get(header.getName());
 			if (cell != null) {
 				date = cell.getDate();
+				break;
 			}
 		}
 
