@@ -7,7 +7,7 @@
 		<span class="labels">
 			<a class="buildName" href="./job/${it.projectName}/${it.buildNumber}">#${it.buildNumber}</a>
 			<j:if test="${it.failures >= 0}">
-				<span class="failureLabel">(<a href="./job/${it.projectName}/${it.buildNumber}/testReport">${it.failures} failure${it.failures > 1 ? 's' : ''}</a>)</span>
+				<span class="failureLabel">(<a href="./job/${it.projectName}/${it.buildNumber}/testReport">${it.failures} failure${it.failures != 1 ? 's' : ''}</a>)</span>
 			</j:if>
 		</span>
 	</td>
