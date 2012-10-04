@@ -163,7 +163,14 @@ var DescriptionDashboard = {
 			row.addClassName('expanded');
 			extra.removeClassName('hidden');
 
-			var url = window.location.pathname + "/rowExtras?id="+rowId;
+			var queryString = window.location.search;
+			if(queryString == null || queryString == "?") {
+				queryString = "?id="+rowId;
+			} else {
+				queryString = queryString + "&id="+rowId;
+			}
+
+			var url = window.location.pathname + "/rowExtras" + queryString;
 			$(document.body).addClassName('loading');
 			new Ajax.Request(url, {
 				method: 'get',
