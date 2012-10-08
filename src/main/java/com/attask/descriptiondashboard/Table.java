@@ -17,14 +17,14 @@ public class Table implements Serializable {
 	private final List<Row> rows;
 	private transient final CustomColumn customColumn;
 
-	public static Table createFromCellMap(int maxRowCount, List<Header> jobs, Map<String, Map<String, Cell>> cellMap, CustomColumn customColumn) {
+	public static Table createFromCellMap(int maxRowCount, List<Header> jobs, Map<String, Map<String, Cell>> cellMap, CustomColumn customColumn, Collection<Rule> rules) {
 		List<Row> rows = new ArrayList<Row>();
 		for (Map.Entry<String, Map<String, Cell>> entry : cellMap.entrySet()) {
 			String rowID = entry.getKey();
 			Map<String, Cell> builds = entry.getValue();
 			Cell first = builds.values().iterator().next();
 			String description = first.getDescription();
-			Row row = new Row(rowID, description, builds, jobs, customColumn);
+			Row row = new Row(rowID, description, builds, jobs, customColumn, rules);
 			rows.add(row);
 		}
 

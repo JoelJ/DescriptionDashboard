@@ -1,3 +1,39 @@
+.rule {
+	display: inline-block;
+	border: 1px solid black;
+	border-radius: 5px;
+	padding: 5px 8px;
+	margin: 2px;
+}
+
+.rule .message {
+	margin-left: 10px;
+}
+
+.rule .icon {
+	width: 24px;
+	height: 24px;
+	margin-right: 3px;
+}
+
+.rule.Info {
+	background-color: #EEE;
+	border-color: #4A4A4A;
+	color: black;
+}
+
+.rule.Warning {
+	background-color: #FFF9D6;
+	border-color: #AA5100;
+	color: #AA5100;
+}
+
+.rule.Error {
+	background-color: #FFD6D7;
+	border-color: #CC0000;
+	color: #770000;
+}
+
 .details>div {
 	position: relative;
 }

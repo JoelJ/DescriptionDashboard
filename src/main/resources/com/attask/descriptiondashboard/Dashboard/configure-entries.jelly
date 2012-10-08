@@ -93,4 +93,11 @@
 	<f:entry title="Inject Bottom" field="injectBottom">
 		<f:textarea/>
 	</f:entry>
+
+	<f:entry title="Rule Names" field="rules" description="Give your rules a name. After submitting, this form will give you more options for those rules.">
+		<f:textbox/>
+	</f:entry>
+	<j:forEach var="rule" items="${it.rules}">
+		<st:include it="${rule}" page="config.jelly"/>
+	</j:forEach>
 </j:jelly>

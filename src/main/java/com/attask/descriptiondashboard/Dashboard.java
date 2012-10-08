@@ -9,6 +9,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 import net.sf.json.util.CycleDetectionStrategy;
+import org.apache.commons.digester.Rules;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -42,6 +43,7 @@ public class Dashboard extends View {
 	private String injectTop;
 	private String injectBottom;
 	private int maxAge;
+	private List<Rule> rules;
 
 	private transient Pattern descriptionPatternRegex;
 	private transient Table table;
@@ -54,6 +56,7 @@ public class Dashboard extends View {
 	public Dashboard(String name) {
 		super(name);
 		jobs = createArrayList();
+		rules = Rule.createFromRequest(null, jobs);
 	}
 
 	@Exported
@@ -112,7 +115,7 @@ public class Dashboard extends View {
 		}
 
 		start = new Date().getTime();
-		Table fromCellMap = Table.createFromCellMap(count, jobs, cellMap, this.createCustomColumn());
+		Table fromCellMap = Table.createFromCellMap(count, jobs, cellMap, this.createCustomColumn(), this.getRules());
 		total = new Date().getTime() - start;
 		if(total > 1000) {
 			Logger.error("createFromCellMap took " + total + "ms");
@@ -319,6 +322,8 @@ public class Dashboard extends View {
 		} else {
 			this.cacheTime = Integer.parseInt(cacheTime);
 		}
+
+		rules = Rule.createFromRequest(request, this.jobs);
 	}
 
 	@SuppressWarnings("UnusedDeclaration")
@@ -443,6 +448,11 @@ public class Dashboard extends View {
 	@Exported
 	public int getMaxAge() {
 		return maxAge;
+	}
+
+	@Exported
+	public List<Rule> getRules() {
+		return rules;
 	}
 
 	@SuppressWarnings("UnusedDeclaration")

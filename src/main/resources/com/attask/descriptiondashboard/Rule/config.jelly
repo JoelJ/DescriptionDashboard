@@ -1,0 +1,23 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
+		 xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+	<f:entry title="&lt;h3&gt;${it.name}&lt;/h3&gt;" field="rule_${it.name}">
+	</f:entry>
+
+	<f:entry title="Message" field="rule_${it.name}_message">
+		<f:textarea value="${it.message}"/>
+	</f:entry>
+	<f:entry title="Severity" field="rule_${it.name}_severity">
+		<select name="_.rule_${it.name}_severity">
+			<option value="${it.severity}">Current (${it.severity})</option>
+			<option value="Info">Info</option>
+			<option value="Warning">Warning</option>
+			<option value="Error">Error</option>
+		</select>
+	</f:entry>
+	<f:entry title="xPatterns" field="rule_${it.name}_patterns" description="One per line. Use '*' as a wildcard.">
+		<f:textarea value="${it.patterns}"/>
+	</f:entry>
+	<f:entry title="Included Jobs" field="rule_${it.name}_headers" description="Comma separated.">
+		<f:textbox value="${it.headers}"/>
+	</f:entry>
+</j:jelly>

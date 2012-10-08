@@ -78,6 +78,18 @@
 			background-image: url('${rootURL}/plugin/DescriptionDashboard/images/fullScreen.png');
 		}
 
+		.rule.Info .icon {
+			background-image: url('${rootURL}/plugin/DescriptionDashboard/images/Info.png');
+		}
+
+		.rule.Warning .icon {
+			background-image: url('${rootURL}/plugin/DescriptionDashboard/images/Warning.png');
+		}
+
+		.rule.Error .icon {
+			background-image: url('${rootURL}/plugin/DescriptionDashboard/images/Error.png');
+		}
+
 		<j:forEach var="user" items="${it.findUsersWithCustomImages()}">
 			tr[class~='${user.name}'] .SUCCESS img.status,
 			tr[class~='${user.id}'] .SUCCESS img.status {

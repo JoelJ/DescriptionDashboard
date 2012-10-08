@@ -3,6 +3,7 @@ package com.attask.descriptiondashboard;
 import hudson.Util;
 import hudson.model.Project;
 import hudson.model.Run;
+import org.apache.commons.digester.Rules;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
 
@@ -30,8 +31,9 @@ public class Row implements Serializable {
 	private final boolean running;
 	private final Date date;
 	private final String formattedDate;
+	private final Collection<Rule> rules;
 
-	public Row(String id, String description, Map<String, Cell> cells, List<Header> headers, CustomColumn customColumn) {
+	public Row(String id, String description, Map<String, Cell> cells, List<Header> headers, CustomColumn customColumn, Collection<Rule> rules) {
 		if(id == null) {
 			throw new IllegalArgumentException("id cannot be null");
 		}
@@ -50,6 +52,7 @@ public class Row implements Serializable {
 		this.cells = cells;
 		this.headers = headers;
 		this.customColumn = customColumn;
+		this.rules = rules;
 
 		boolean running = false;
 		int totalFailures = 0;
@@ -249,6 +252,25 @@ public class Row implements Serializable {
 			}
 		}
 		return total;
+	}
+
+	public Collection<Rule> getRules() {
+		return rules;
+	}
+
+	public Collection<Rule> findMatchingRules() {
+		List<Rule> result = new ArrayList<Rule>(rules.size());
+		Set<Rule> allRules = new HashSet<Rule>(rules);
+		for (Cell cell : cells.values()) {
+			Run<?, ?> run = Run.fromExternalizableId(cell.getProjectName() + "#" + cell.getBuildNumber());
+			Collection<Rule> matches = Rule.matches(allRules, run);
+			allRules.removeAll(matches);
+			result.addAll(matches);
+			if(allRules.isEmpty()) {
+				break;
+			}
+		}
+		return result;
 	}
 
 	@Override

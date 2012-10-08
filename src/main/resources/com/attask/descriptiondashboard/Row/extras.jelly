@@ -1,5 +1,11 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
 		 xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+	<j:set var="rules" value="${it.findMatchingRules()}"/>
+	<div class="rules">
+		<j:forEach var="rule" items="${rules}">
+			<st:include it="${rule}" page="rule.jelly"/>
+		</j:forEach>
+	</div>
 	<div class="changes">
 		<j:choose>
 			<j:when test="${!it.findChangeSet().isEmpty()}">
