@@ -3,10 +3,10 @@ package com.attask.descriptiondashboard;
 import hudson.Util;
 import hudson.model.Project;
 import hudson.model.Run;
-import org.apache.commons.digester.Rules;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -263,7 +263,21 @@ public class Row implements Serializable {
 		Set<Rule> allRules = new HashSet<Rule>(rules);
 		for (Cell cell : cells.values()) {
 			Run<?, ?> run = Run.fromExternalizableId(cell.getProjectName() + "#" + cell.getBuildNumber());
-			Collection<Rule> matches = Rule.matches(allRules, run);
+
+			Collection<Rule> matches;
+			RuleAction action = run.getAction(RuleAction.class);
+			if(action != null) {
+				matches = Collections.unmodifiableCollection(action.getViolatedRules());
+			} else {
+				matches = Rule.matches(allRules, run);
+				run.addAction(new RuleAction(matches));
+				try {
+					run.save();
+				} catch (IOException e) {
+					Logger.error("Failed to save build after adding action.", e);
+				}
+			}
+
 			allRules.removeAll(matches);
 			result.addAll(matches);
 			if(allRules.isEmpty()) {
