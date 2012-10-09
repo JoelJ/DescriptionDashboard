@@ -266,27 +266,34 @@ public class Row implements Serializable {
 
 	public Collection<Rule> findMatchingRules() {
 		List<Rule> result = new ArrayList<Rule>(rules.size());
-		Set<Rule> allRules = new HashSet<Rule>(rules);
+
+		Set<Rule> applicableRules = new HashSet<Rule>(rules.size());
+		for (Rule rule : rules) {
+			if(rule.applies(this.getTotalFailures(), this.getCriticalRequired(), this.getCriticalAll())) {
+				applicableRules.add(rule);
+			}
+		}
+
 		for (Cell cell : cells.values()) {
 			Run<?, ?> run = Run.fromExternalizableId(cell.getProjectName() + "#" + cell.getBuildNumber());
 
 			Collection<Rule> matches;
-			RuleAction action = run.getAction(RuleAction.class);
-			if(action != null) {
-				matches = Collections.unmodifiableCollection(action.getViolatedRules());
-			} else {
-				matches = Rule.matches(allRules, run);
+//			RuleAction action = run.getAction(RuleAction.class);
+//			if(action != null) {
+//				matches = Collections.unmodifiableCollection(action.getViolatedRules());
+//			} else {
+				matches = Rule.matches(applicableRules, run);
 				run.addAction(new RuleAction(matches));
 				try {
 					run.save();
 				} catch (IOException e) {
 					Logger.error("Failed to save build after adding action.", e);
 				}
-			}
+//			}
 
-			allRules.removeAll(matches);
+			applicableRules.removeAll(matches);
 			result.addAll(matches);
-			if(allRules.isEmpty()) {
+			if(applicableRules.isEmpty()) {
 				break;
 			}
 		}

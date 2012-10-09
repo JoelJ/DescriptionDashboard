@@ -28,12 +28,28 @@ public class Rule implements Serializable {
 	private final Collection<RuleMatcher> ruleMatchers;
 	private final Collection<Header> headers;
 
-	public Rule(String name, String message, Severity severity, Collection<RuleMatcher> ruleMatchers, Collection<Header> headers) {
+	private final int totalFailuresMin;
+	private final int totalFailuresMax;
+	private final boolean onCriticalAll;
+	private final boolean onCriticalRequired;
+
+	public Rule(String name,
+				String message,
+				Severity severity,
+				Collection<RuleMatcher> ruleMatchers,
+				Collection<Header> headers,
+				int totalFailuresMin, int totalFailuresMax,
+				boolean onCriticalAll,
+				boolean onCriticalRequired) {
 		this.name = name;
 		this.message = message;
 		this.severity = severity;
 		this.ruleMatchers = ruleMatchers;
 		this.headers = headers;
+		this.totalFailuresMin = totalFailuresMin;
+		this.totalFailuresMax = totalFailuresMax;
+		this.onCriticalAll = onCriticalAll;
+		this.onCriticalRequired = onCriticalRequired;
 	}
 
 	public static Collection<Rule> matches(Collection<Rule> rules, Run<?, ?> build) {
@@ -105,6 +121,26 @@ public class Rule implements Serializable {
 		return headers;
 	}
 
+	@Exported
+	public int getTotalFailuresMin() {
+		return totalFailuresMin;
+	}
+
+	@Exported
+	public int getTotalFailuresMax() {
+		return totalFailuresMax;
+	}
+
+	@Exported
+	public boolean getOnCriticalAll() {
+		return onCriticalAll;
+	}
+
+	@Exported
+	public boolean getOnCriticalRequired() {
+		return onCriticalRequired;
+	}
+
 	public static List<Rule> createFromRequest(StaplerRequest request, List<Header> allHeaders) {
 		List<Rule> listToPopulate = createArrayList();
 		if(request != null) {
@@ -117,12 +153,54 @@ public class Rule implements Serializable {
 					Severity severity = parseSeverity(request, ruleName);
 					Collection<RuleMatcher> ruleMatchers = parsePatterns(request, ruleName);
 					List<Header> theHeaders = parseHeaders(request, allHeaders, ruleName);
-					Rule rule = new Rule(ruleName, message, severity, ruleMatchers, theHeaders);
+
+					int totalFailuresMin = parseMinFailures(request, ruleName);
+					int totalFailuresMax = parseMaxFailures(request, ruleName);
+					boolean onCriticalAll = parseCriticalAll(request, ruleName);
+					boolean onCriticalRequired = parseCriticalRequired(request, ruleName);
+
+					Rule rule = new Rule(ruleName, message, severity, ruleMatchers, theHeaders, totalFailuresMin, totalFailuresMax, onCriticalAll, onCriticalRequired);
 					listToPopulate.add(rule);
 				}
 			}
 		}
 		return listToPopulate;
+	}
+
+	private static boolean parseCriticalRequired(StaplerRequest request, String ruleName) {
+		String parameter = request.getParameter("_.rule_"+ruleName+"_onCriticalRequired");
+		return parseBoolean(parameter);
+	}
+
+	private static boolean parseCriticalAll(StaplerRequest request, String ruleName) {
+		String parameter = request.getParameter("_.rule_"+ruleName+"_onCriticalAll");
+		return parseBoolean(parameter);
+	}
+
+	private static boolean parseBoolean(String parameter) {
+		boolean result = false;
+		if(parameter != null && !parameter.isEmpty()) {
+			result = Boolean.parseBoolean(parameter);
+		}
+		return result;
+	}
+
+	private static int parseMaxFailures(StaplerRequest request, String ruleName) {
+		String parameter = request.getParameter("_.rule_"+ruleName+"_totalFailuresMax");
+		return parseInt(parameter);
+	}
+
+	private static int parseMinFailures(StaplerRequest request, String ruleName) {
+		String parameter = request.getParameter("_.rule_"+ruleName+"_totalFailuresMin");
+		return parseInt(parameter);
+	}
+
+	private static int parseInt(String parameter) {
+		int result = -1;
+		if(parameter != null && !parameter.isEmpty()) {
+			result = Integer.parseInt(parameter);
+		}
+		return result;
 	}
 
 	private static Collection<RuleMatcher> parsePatterns(StaplerRequest request, String ruleName) {
@@ -167,6 +245,31 @@ public class Rule implements Serializable {
 			}
 		}
 		return theHeaders;
+	}
+
+	public boolean applies(int totalFailures, boolean criticalRequired, boolean criticalAll) {
+		int totalFailuresMin = getTotalFailuresMin();
+		int totalFailuresMax = getTotalFailuresMax();
+		if(totalFailuresMin >= 0 || totalFailuresMax >= 0) {
+			totalFailuresMax = totalFailuresMax >= 0 ? totalFailuresMax : Integer.MAX_VALUE;
+			if(totalFailuresMin <= totalFailures && totalFailures <= totalFailuresMax) {
+				return true;
+			}
+		}
+
+		if(this.getOnCriticalAll()) {
+			if(criticalAll) {
+				return true;
+			}
+		}
+
+		if(this.getOnCriticalRequired()) {
+			if(criticalRequired) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public static enum Severity {

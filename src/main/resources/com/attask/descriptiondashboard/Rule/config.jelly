@@ -20,4 +20,32 @@
 	<f:entry title="Included Jobs" field="rule_${it.name}_headers" description="Comma separated.">
 		<f:textbox value="${it.headers}"/>
 	</f:entry>
+
+	<f:entry title="Number Failures (min)" field="rule_${it.name}_totalFailuresMin" description="Minimum number of failures on row before rule is checked. Leave blank (or use a negative number) to ignore.">
+		<f:textbox value="${it.totalFailuresMin}"/>
+	</f:entry>
+	<f:entry title="Number Failures (max)" field="rule_${it.name}_totalFailuresMax" description="Maximum number of failures on row before rule is not checked anymore. Leave blank (or use a negative number) to ignore.">
+		<f:textbox value="${it.totalFailuresMax}"/>
+	</f:entry>
+
+	<f:entry title="Apply When Required Critical" field="rule_${it.name}_onCriticalRequired" description="If checked, the rule will only be applied if the required jobs for a row are in a critical state.">
+		<j:choose>
+			<j:when test="${it.onCriticalRequired}">
+				<f:checkbox checked="true" value="true"/>
+			</j:when>
+			<j:otherwise>
+				<f:checkbox value="true"/>
+			</j:otherwise>
+		</j:choose>
+	</f:entry>
+	<f:entry title="Apply When Any Critical" field="rule_${it.name}_onCriticalAll" description="If checked, the rule will only be applied if any of the jobs for a row are in a critical state.">
+		<j:choose>
+			<j:when test="${it.onCriticalAll}">
+				<f:checkbox checked="true" value="true"/>
+			</j:when>
+			<j:otherwise>
+				<f:checkbox value="true"/>
+			</j:otherwise>
+		</j:choose>
+	</f:entry>
 </j:jelly>
