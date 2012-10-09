@@ -133,6 +133,7 @@ public class Row implements Serializable {
 		return running;
 	}
 
+	@SuppressWarnings("UnusedDeclaration")
 	public CustomColumn getCustomColumn() {
 		return customColumn;
 	}
@@ -148,10 +149,12 @@ public class Row implements Serializable {
 		return date;
 	}
 
+	@SuppressWarnings("UnusedDeclaration")
 	public String findDateFormatted() {
 		return formattedDate;
 	}
 
+	@SuppressWarnings("UnusedDeclaration")
 	public String findDatePretty() {
 		long duration = new Date().getTime()-findDate().getTime();
 		return Util.getPastTimeString(duration);
@@ -182,11 +185,11 @@ public class Row implements Serializable {
 		return true;
 	}
 
+	@SuppressWarnings("UnusedDeclaration")
 	public int findNumberCommitters() {
-		Iterator<Header> iterator = headers.iterator();
-		while(iterator.hasNext()) {
-			Cell cell = cells.get(iterator.next().getName());
-			if(cell != null) {
+		for (Header header : headers) {
+			Cell cell = cells.get(header.getName());
+			if (cell != null) {
 				return cell.getNumberCommitters();
 			}
 		}
@@ -233,6 +236,7 @@ public class Row implements Serializable {
 		return Collections.unmodifiableList(allChanges);
 	}
 
+	@SuppressWarnings("UnusedDeclaration")
 	public boolean idEquals(String[] ids) {
 		if(ids != null) {
 			for (String id : ids) {
@@ -244,6 +248,7 @@ public class Row implements Serializable {
 		return false;
 	}
 
+	@SuppressWarnings("UnusedDeclaration")
 	public int findNumberVisibleColumns() {
 		int total = 0;
 		for (Header header : headers) {
@@ -254,6 +259,7 @@ public class Row implements Serializable {
 		return total;
 	}
 
+	@Exported
 	public Collection<Rule> getRules() {
 		return rules;
 	}
