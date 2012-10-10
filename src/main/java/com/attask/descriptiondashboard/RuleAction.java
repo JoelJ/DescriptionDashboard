@@ -16,14 +16,24 @@ import java.util.Set;
 @ExportedBean
 public class RuleAction implements Action {
 	private final Set<Rule> violatedRules;
+	private final boolean wasRunning;
 
-	public RuleAction(Collection<Rule> violatedRules) {
+	public RuleAction(Collection<Rule> violatedRules, boolean wasRunning) {
 		this.violatedRules = new HashSet<Rule>(violatedRules);
+		this.wasRunning = wasRunning;
 	}
 
 	@Exported
 	public Set<Rule> getViolatedRules() {
 		return violatedRules;
+	}
+
+	/**
+	 * @return Returns true if the job was running when the rules were applied.
+	 */
+	@Exported
+	public boolean getWasRunning() {
+		return wasRunning;
 	}
 
 	public String getIconFileName() {

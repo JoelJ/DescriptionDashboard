@@ -278,18 +278,25 @@ public class Row implements Serializable {
 			Run<?, ?> run = Run.fromExternalizableId(cell.getProjectName() + "#" + cell.getBuildNumber());
 
 			Collection<Rule> matches;
-//			RuleAction action = run.getAction(RuleAction.class);
-//			if(action != null) {
-//				matches = Collections.unmodifiableCollection(action.getViolatedRules());
-//			} else {
+			RuleAction action = run.getAction(RuleAction.class);
+
+			//If the rule was running last time, let's re-evaluate to see if any new rules were added.
+			if(action != null && action.getWasRunning()) {
+				run.getActions().remove(action);
+				action = null;
+			}
+
+			if(action != null) {
+				matches = Collections.unmodifiableCollection(action.getViolatedRules());
+			} else {
 				matches = Rule.matches(applicableRules, run);
-				run.addAction(new RuleAction(matches));
+				run.addAction(new RuleAction(matches, run.isBuilding()));
 				try {
 					run.save();
 				} catch (IOException e) {
 					Logger.error("Failed to save build after adding action.", e);
 				}
-//			}
+			}
 
 			applicableRules.removeAll(matches);
 			result.addAll(matches);
