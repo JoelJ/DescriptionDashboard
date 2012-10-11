@@ -170,7 +170,7 @@ public class Dashboard extends View {
 
 		if(descriptionPatternRegex == null) {
 			Logger.info("descriptionPatternRegex not compiled");
-			descriptionPatternRegex = Pattern.compile(descriptionPattern);
+			descriptionPatternRegex = Pattern.compile(descriptionPattern, Pattern.MULTILINE);
 		}
 
 		Map<String, Map<String, Cell>> cellMap = new HashMap<String, Map<String, Cell>>();
@@ -258,7 +258,7 @@ public class Dashboard extends View {
 
 		this.count = Integer.parseInt(request.getParameter("_.count"));
 		this.descriptionPattern = request.getParameter("_.descriptionPattern");
-		this.descriptionPatternRegex = Pattern.compile(this.descriptionPattern);
+		this.descriptionPatternRegex = Pattern.compile(this.descriptionPattern, Pattern.MULTILINE);
 		this.descriptionPatternGroup = Integer.parseInt(request.getParameter("_.descriptionPatternGroup"));
 		this.orbSize = Integer.parseInt(request.getParameter("_.orbSize"));
 
