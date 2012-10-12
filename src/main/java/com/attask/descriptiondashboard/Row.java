@@ -312,7 +312,7 @@ public class Row implements Serializable {
 		}
 		long runtime = new Date().getTime() - start;
 		if(runtime > 1000) {
-			Logger.error("It took " + runtime + "ms to find all matching rules!");
+			Logger.error("It took " + runtime + "ms to find all matching rules for row " + this.getId());
 		}
 		return result;
 	}
