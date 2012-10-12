@@ -53,6 +53,8 @@ public class Rule implements Serializable {
 	}
 
 	public static Collection<Rule> matches(Collection<Rule> rules, Run<?, ?> build) {
+		long start = new Date().getTime();
+
 		List<Rule> result = new ArrayList<Rule>(rules.size());
 
 		Scanner scanner = null;
@@ -84,6 +86,10 @@ public class Rule implements Serializable {
 			}
 		}
 
+		long runtime = new Date().getTime() - start;
+		if(runtime > 1000) {
+			Logger.error("It took " + runtime + "ms to find all matching rules for " + build.getFullDisplayName());
+		}
 		return result;
 	}
 

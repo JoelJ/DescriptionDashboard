@@ -265,6 +265,10 @@ public class Row implements Serializable {
 	}
 
 	public Collection<Rule> findMatchingRules() {
+		if(rules == null || rules.isEmpty()) {
+			return Collections.emptyList();
+		}
+		long start = new Date().getTime();
 		List<Rule> result = new ArrayList<Rule>(rules.size());
 
 		Set<Rule> applicableRules = new HashSet<Rule>(rules.size());
@@ -287,8 +291,10 @@ public class Row implements Serializable {
 			}
 
 			if(action != null) {
+				Logger.finer("using cached rule result");
 				matches = Collections.unmodifiableCollection(action.getViolatedRules());
 			} else {
+				Logger.finer("generating cached rule result");
 				matches = Rule.matches(applicableRules, run);
 				run.addAction(new RuleAction(matches, run.isBuilding()));
 				try {
@@ -303,6 +309,10 @@ public class Row implements Serializable {
 			if(applicableRules.isEmpty()) {
 				break;
 			}
+		}
+		long runtime = new Date().getTime() - start;
+		if(runtime > 1000) {
+			Logger.error("It took " + runtime + "ms to find all matching rules!");
 		}
 		return result;
 	}
