@@ -14,7 +14,7 @@
 			<option value="Error">Error</option>
 		</select>
 	</f:entry>
-	<f:entry title="xPatterns" field="rule_${it.name}_patterns" description="One per line. Use '*' as a wildcard.">
+	<f:entry title="Patterns" field="rule_${it.name}_patterns" description="One per line. Use '*' as a wildcard.">
 		<f:textarea value="${it.patterns}"/>
 	</f:entry>
 	<f:entry title="Included Jobs" field="rule_${it.name}_headers" description="Comma separated.">
