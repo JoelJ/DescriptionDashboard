@@ -1,3 +1,7 @@
+.verifications .review .author {
+	display: none; /*don't display the author for verifications
+}
+
 .review {
     border: 1px solid black;
 
