@@ -188,38 +188,39 @@ img {
 }
 
 .running img.status {
-	-webkit-animation: pulse 1.5s infinite normal;
-	-moz-animation: pulseFF 1.5s infinite normal;
+	opacity: 0.2;
+	/*-webkit-animation: pulse 1.5s infinite normal;*/
+	/*-moz-animation: pulseFF 1.5s infinite normal;*/
 }
 
 .details .date {
 	font-size: .75em;
 }
 
-@-moz-keyframes pulseFF {
-      0% {opacity: 0.2;}
-     10% {opacity: 0.4;}
-     20% {opacity: 0.7;}
-     30% {opacity: 0.8;}
-     40% {opacity: 0.9;}
-     50% {opacity: 1.0;}
-     60% {opacity: 0.9;}
-     70% {opacity: 0.8;}
-     80% {opacity: 0.7;}
-     90% {opacity: 0.4;}
-    100% {opacity: 0.2;}
-}
+/*@-moz-keyframes pulseFF {*/
+      /*0% {opacity: 0.2;}*/
+     /*10% {opacity: 0.4;}*/
+     /*20% {opacity: 0.7;}*/
+     /*30% {opacity: 0.8;}*/
+     /*40% {opacity: 0.9;}*/
+     /*50% {opacity: 1.0;}*/
+     /*60% {opacity: 0.9;}*/
+     /*70% {opacity: 0.8;}*/
+     /*80% {opacity: 0.7;}*/
+     /*90% {opacity: 0.4;}*/
+    /*100% {opacity: 0.2;}*/
+/*}*/
 
-@-webkit-keyframes pulse {
-      0% {opacity: 0.2;}
-     10% {opacity: 0.4;}
-     20% {opacity: 0.7;}
-     30% {opacity: 0.8;}
-     40% {opacity: 0.9;}
-     50% {opacity: 1.0;}
-     60% {opacity: 0.9;}
-     70% {opacity: 0.8;}
-     80% {opacity: 0.7;}
-     90% {opacity: 0.4;}
-    100% {opacity: 0.2;}
-}
+/*@-webkit-keyframes pulse {*/
+      /*0% {opacity: 0.2;}*/
+     /*10% {opacity: 0.4;}*/
+     /*20% {opacity: 0.7;}*/
+     /*30% {opacity: 0.8;}*/
+     /*40% {opacity: 0.9;}*/
+     /*50% {opacity: 1.0;}*/
+     /*60% {opacity: 0.9;}*/
+     /*70% {opacity: 0.8;}*/
+     /*80% {opacity: 0.7;}*/
+     /*90% {opacity: 0.4;}*/
+    /*100% {opacity: 0.2;}*/
+/*}*/

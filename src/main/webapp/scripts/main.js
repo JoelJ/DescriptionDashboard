@@ -22,6 +22,24 @@ var DescriptionDashboard = {
 		$('DescriptionDashboard').observe('click', DescriptionDashboard.onRelayClick);
 
 		$(document.body).observe('keyup', DescriptionDashboard.onKeyPressed);
+
+		DescriptionDashboard.animatedImages = $$('.running img.status');
+		DescriptionDashboard.animateInterval = 0.1;
+		DescriptionDashboard.currentAnimation = 0.4;
+		DescriptionDashboard.animateOrbs();
+	},
+
+	animateOrbs: function() {
+		DescriptionDashboard.currentAnimation += DescriptionDashboard.animateInterval;
+		if(DescriptionDashboard.currentAnimation <= 0.2 || DescriptionDashboard.currentAnimation >= 0.8) {
+			DescriptionDashboard.animateInterval *= -1;
+		}
+
+		var imagesToAnimate = DescriptionDashboard.animatedImages;
+		for(var i = imagesToAnimate.length-1; i >= 0; i--) {
+			imagesToAnimate[i].setOpacity(DescriptionDashboard.currentAnimation);
+		}
+		setTimeout(DescriptionDashboard.animateOrbs, 100);
 	},
 
 	onRelayClick: function(e) {
@@ -88,6 +106,7 @@ var DescriptionDashboard = {
 			DescriptionDashboard.showAllColumns();
 		}
 
+		DescriptionDashboard.animatedImages = $$('.running img.status');
 		DescriptionDashboard.refreshHandle = setTimeout(DescriptionDashboard.enableAutoRefresh, 10000);
 	},
 
