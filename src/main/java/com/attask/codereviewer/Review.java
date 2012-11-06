@@ -46,6 +46,9 @@ public class Review {
 
 	@Exported
 	public User getAuthor() {
+		if(author == null || author.getId() == null) { //it's odd, but having the SYSTEM user breaks the API. It's messed up!
+			return null;
+		}
 		return author;
 	}
 
