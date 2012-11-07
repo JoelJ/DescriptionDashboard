@@ -44,6 +44,7 @@ public class Dashboard extends View {
 	private String injectBottom;
 	private int maxAge;
 	private List<Rule> rules;
+	private boolean showCurrentUsername;
 
 	private transient Pattern descriptionPatternRegex;
 	private transient Table table;
@@ -181,6 +182,9 @@ public class Dashboard extends View {
 			int foundCount = 0;
 			String jobName = jobHeader.getName();
 			Project project = projects.get(jobName);
+			if (project == null) {
+				continue;
+			}
 
 			int iterated = 0;
 			for(int i = project.getNextBuildNumber() - 1; i >= 0; i--) {
@@ -324,6 +328,9 @@ public class Dashboard extends View {
 		}
 
 		rules = Rule.createFromRequest(request, this.jobs);
+
+		String showCurrentUsernameParameter = request.getParameter("_.showCurrentUsername");
+		this.showCurrentUsername = "on".equals(showCurrentUsernameParameter);
 	}
 
 	@SuppressWarnings("UnusedDeclaration")
@@ -455,6 +462,11 @@ public class Dashboard extends View {
 		return rules;
 	}
 
+	@Exported
+	public boolean getShowCurrentUsername() {
+		return showCurrentUsername;
+	}
+
 	@SuppressWarnings("UnusedDeclaration")
 	public ExtensionList<CustomColumn> allCustomColumns() {
 		return CustomColumn.all();
@@ -486,6 +498,10 @@ public class Dashboard extends View {
 				return Util.join(this, ",");
 			}
 		};
+	}
+
+	public User getUser() {
+		return User.current();
 	}
 
 	@Extension

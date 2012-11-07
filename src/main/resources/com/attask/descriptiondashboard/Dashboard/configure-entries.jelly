@@ -64,6 +64,9 @@
 	<f:entry title="Cache Table Time (seconds)" field="cacheTime">
 		<f:textbox/>
 	</f:entry>
+    <f:entry title="Only show logged in user's rows" field="showCurrentUsername">
+        <f:checkbox/>
+    </f:entry>
 	<f:entry title="Status Image Size" field="orbSize">
 		<select name="_.orbSize">
 			<option value="${it.orbSize}">Current (${it.orbSize}x${it.orbSize})</option>

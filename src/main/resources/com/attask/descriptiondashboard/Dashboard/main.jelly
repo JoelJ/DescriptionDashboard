@@ -78,6 +78,14 @@
 			background-image: url('${rootURL}/plugin/DescriptionDashboard/images/fullScreen.png');
 		}
 
+        #DescriptionDashboard .toggleJustMe {
+            background-image: url('${rootURL}/static/432ed95f/images/16x16/user.png');
+        }
+
+        #DescriptionDashboard.showCurrentUsername .toggleJustMe {
+            background-image: url('${rootURL}/plugin/DescriptionDashboard/images/singleuser.png');
+        }
+
 		.rule.Info .icon {
 			background-image: url('${rootURL}/plugin/DescriptionDashboard/images/Info.png');
 		}
@@ -89,6 +97,14 @@
 		.rule.Error .icon {
 			background-image: url('${rootURL}/plugin/DescriptionDashboard/images/Error.png');
 		}
+
+        #DescriptionDashboard.showCurrentUsername tr.row {
+            display: none;
+        }
+
+        #DescriptionDashboard.showCurrentUsername tr.row.${it.user.id} {
+            display: table-row;
+        }
 
 		<j:forEach var="user" items="${it.findUsersWithCustomImages()}">
 			tr[class~='${user.name}'] .SUCCESS img.status,
@@ -105,7 +121,7 @@
 	<div class="injectTop">
 		${it.injectTop}
 	</div>
-	<div id="DescriptionDashboard">
+	<div id="DescriptionDashboard" class="${it.showCurrentUsername ? 'showCurrentUsername' : ''}">
 		<st:include it="${table}" page="render.jelly" />
 	</div>
 	<div class="injectBottom">

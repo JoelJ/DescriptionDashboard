@@ -12,6 +12,7 @@
 				Details
 				<img class="detailsButton showAll" src="${rootURL}/plugin/DescriptionDashboard/images/transparent.png"/>
 				<img class="detailsButton fullScreen" src="${rootURL}/plugin/DescriptionDashboard/images/transparent.png"/>
+                <img class="detailsButton toggleJustMe" src="${rootURL}/plugin/DescriptionDashboard/images/transparent.png" />
 			</th>
 			<j:forEach var="header" items="${it.headers}">
 				<th class="cellHeader ${header.visible ? '' : 'hidden shouldBeHidden'}">

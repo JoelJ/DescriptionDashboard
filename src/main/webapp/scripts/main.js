@@ -49,6 +49,8 @@ var DescriptionDashboard = {
 			DescriptionDashboard.onShowAllClicked();
 		} else if(e.target.hasClassName('fullScreen')) {
 			DescriptionDashboard.onFullScreenClicked();
+        } else if(e.target.hasClassName('toggleJustMe')) {
+            DescriptionDashboard.onShowJustMeClicked();
 		} else if(e.target.up('.row')) {
 			DescriptionDashboard.onRowClick(e);
 		}
@@ -247,6 +249,10 @@ var DescriptionDashboard = {
 		if(dashboard.mozRequestFullScreen) {
 			dashboard.mozRequestFullScreen();
 		}
+	},
+
+    onShowJustMeClicked: function() {
+        $('DescriptionDashboard').toggleClassName('showCurrentUsername');
 	},
 
 	fillScreen: function() {
