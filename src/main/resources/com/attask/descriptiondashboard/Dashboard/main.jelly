@@ -15,6 +15,11 @@
 			background-color: #FEFEB2;
 		}
 
+		.showCurrentUsername .row[class~='${it.findUserId()}'],
+		.showCurrentUsername .row[class~='${it.findUserName()}'] {
+			background-color: transparent;
+		}
+
 		.row[class~='${it.findUserId()}']:hover,
 		.row[class~='${it.findUserName()}']:hover {
 			background-color: #FEFE65;
