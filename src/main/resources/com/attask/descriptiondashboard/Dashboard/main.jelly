@@ -15,11 +15,6 @@
 			background-color: #FEFEB2;
 		}
 
-		.showCurrentUsername .row[class~='${it.findUserId()}'],
-		.showCurrentUsername .row[class~='${it.findUserName()}'] {
-			background-color: transparent;
-		}
-
 		.row[class~='${it.findUserId()}']:hover,
 		.row[class~='${it.findUserName()}']:hover {
 			background-color: #FEFE65;
@@ -29,6 +24,24 @@
 		.row.expanded[class~='${it.findUserId()}']:hover {
 			background-color: #FEFE65 !important;
 		}
+
+
+		/* When in show only current user mode, don't use yellow highlights */
+		.showCurrentUsername .row[class~='${it.findUserId()}'],
+		.showCurrentUsername .row[class~='${it.findUserName()}'] {
+			background-color: transparent;
+		}
+
+		.showCurrentUsername .row[class~='${it.findUserId()}']:hover,
+		.showCurrentUsername .row[class~='${it.findUserName()}']:hover {
+			background-color: #F0F0F0;
+		}
+
+		.showCurrentUsername .row.expanded[class~='${it.findUserId()}'],
+		.showCurrentUsername .row.expanded[class~='${it.findUserId()}']:hover {
+			background-color: #F0F0F0 !important;
+		}
+
 
 		img.status {
 			width: ${it.orbSize}px;
