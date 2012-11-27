@@ -49,7 +49,7 @@ public class Dashboard extends View {
 	private transient Pattern descriptionPatternRegex;
 	private transient Table table;
 	private transient long tableCreateTime = -1;
-	private transient long cacheTime;
+	private long cacheTime;
 	private transient CustomColumn customColumnCached;
 	private transient Pattern testStatusRegex;
 
