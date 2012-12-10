@@ -233,6 +233,7 @@ public class Row implements Serializable {
 				}
 			}
 		}
+		Collections.sort(allChanges);
 		return Collections.unmodifiableList(allChanges);
 	}
 

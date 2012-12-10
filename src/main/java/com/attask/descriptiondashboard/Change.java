@@ -13,7 +13,7 @@ import java.util.*;
  * Date: 9/16/12
  * Time: 8:19 PM
  */
-public class Change implements Serializable {
+public class Change implements Serializable, Comparable<Change> {
 	private final String revision;
 	private final User author;
 	private final long timestamp;
@@ -74,5 +74,15 @@ public class Change implements Serializable {
 
 	public Set<String> getChangedFiles() {
 		return changedFiles;
+	}
+
+	public int compareTo(Change that) {
+		if(that == null) {
+			return 1;
+		}
+
+		Long thisTime = this.getTimestamp();
+		Long thatTime = that.getTimestamp();
+		return thatTime.compareTo(thisTime);
 	}
 }

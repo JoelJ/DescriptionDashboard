@@ -119,7 +119,8 @@ public class CodeReviewAction extends BaseCodeReviewAction {
 	private void sendEmail(Review review) {
 		Set<User> alreadySentTo = new HashSet<User>();
 		AbstractBuild build = (AbstractBuild) findBuild();
-		Cause.UserCause cause = (Cause.UserCause) build.getCause(Cause.UserCause.class);
+		@SuppressWarnings("unchecked") //Stupid IntelliJ isn't smart
+		Cause.UserIdCause cause = (Cause.UserIdCause) build.getCause(Cause.UserIdCause.class);
 		if (cause != null) {
 			User user = User.get(cause.getUserName());
 			if(alreadySentTo.add(user)) {
@@ -131,6 +132,7 @@ public class CodeReviewAction extends BaseCodeReviewAction {
 				}
 			}
 		}
+		@SuppressWarnings("unchecked") //Stupid IntelliJ isn't smart
 		Cause.UserIdCause userIdCause = (Cause.UserIdCause) build.getCause(Cause.UserIdCause.class);
 		if(userIdCause != null) {
 			String userId = userIdCause.getUserId();
