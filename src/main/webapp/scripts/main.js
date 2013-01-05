@@ -86,7 +86,11 @@ var DescriptionDashboard = {
 			id.push(currentlyExpanded[i].id);
 		}
 
-		var url = window.location.pathname + '/tableOnly' + window.location.search;
+		var rootPath = window.location.pathname;
+		if(!rootPath.endsWith("/")) {
+			rootPath = rootPath + '/';
+		}
+		var url = rootPath + 'tableOnly' + window.location.search;
 		new Ajax.Request(url, {
 			method: 'get',
 			evalJS: 'false',
