@@ -1,7 +1,7 @@
 package com.attask.descriptiondashboard;
 
 import hudson.Util;
-import hudson.model.Project;
+import hudson.model.AbstractProject;
 import hudson.model.Run;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
@@ -224,7 +224,7 @@ public class Row implements Serializable {
 		for (Cell cell : cells.values()) {
 			String projectName = cell.getProjectName();
 			int buildNumber = cell.getBuildNumber();
-			Project project = ProjectUtils.findProject(projectName);
+			AbstractProject project = ProjectUtils.findProject(projectName);
 			if(project != null) {
 				Run buildByNumber = project.getBuildByNumber(buildNumber);
 				if(buildByNumber != null) {

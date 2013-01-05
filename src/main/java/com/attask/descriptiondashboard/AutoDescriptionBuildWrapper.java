@@ -33,7 +33,7 @@ public class AutoDescriptionBuildWrapper extends BuildWrapper {
 			Cause.UpstreamCause cause = (Cause.UpstreamCause) build.getCause(Cause.UpstreamCause.class);
 			if(cause != null) {
 				Run upstreamBuild = findUpstreamBuild(cause);
-				String description = upstreamBuild.getDescription();
+				String description = upstreamBuild == null ? "{ no upstream build }" : upstreamBuild.getDescription();
 				build.setDescription(description);
 			}
 		} else {
@@ -56,7 +56,10 @@ public class AutoDescriptionBuildWrapper extends BuildWrapper {
 	private Run findUpstreamBuild(Cause.UpstreamCause cause) {
 		String upstreamProject = cause.getUpstreamProject();
 		int upstreamBuildNumber = cause.getUpstreamBuild();
-		Project project = ProjectUtils.findProject(upstreamProject);
+		AbstractProject project = ProjectUtils.findProject(upstreamProject);
+		if(project == null) {
+			return null;
+		}
 		return project.getBuildByNumber(upstreamBuildNumber);
 	}
 

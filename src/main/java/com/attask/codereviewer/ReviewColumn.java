@@ -2,7 +2,7 @@ package com.attask.codereviewer;
 
 import com.attask.descriptiondashboard.*;
 import hudson.Extension;
-import hudson.model.Project;
+import hudson.model.AbstractProject;
 import hudson.model.Run;
 
 /**
@@ -32,7 +32,7 @@ public class ReviewColumn extends CustomColumn {
 		Header firstHeader = row.getHeaders().iterator().next();
 		Cell cell = row.getCell(firstHeader.getName());
 		if (cell != null) {
-			Project project = ProjectUtils.findProject(cell.getProjectName());
+			AbstractProject project = ProjectUtils.findProject(cell.getProjectName());
 			if (project != null) {
 				Run build = project.getBuildByNumber(cell.getBuildNumber());
 				if (build != null) {

@@ -50,20 +50,20 @@ public class ProjectUtils {
 		return -1;
 	}
 
-	public static Map<String, Project> findProjects() {
+	public static Map<String, AbstractProject> findProjects() {
 		return findProjects(Jenkins.getInstance());
 	}
 
-	public static Project findProject(String name) {
+	public static AbstractProject findProject(String name) {
 		return findProjects().get(name);
 	}
 
-	protected static Map<String, Project> findProjects(ItemGroup<?> app) {
+	protected static Map<String, AbstractProject> findProjects(ItemGroup<?> app) {
 		Collection<? extends Item> items = app.getItems();
-		Map<String, Project> projectMap = new HashMap<String, Project>();
+		Map<String, AbstractProject> projectMap = new HashMap<String, AbstractProject>();
 		for (Item project : items) {
-			if(project instanceof Project) {
-				projectMap.put(project.getName(), (Project) project);
+			if(project instanceof AbstractProject) {
+				projectMap.put(project.getName(), (AbstractProject) project);
 			}
 		}
 		return projectMap;
