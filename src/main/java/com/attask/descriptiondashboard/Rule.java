@@ -1,11 +1,7 @@
 package com.attask.descriptiondashboard;
 
 import hudson.Util;
-import hudson.model.Job;
-import hudson.model.Project;
 import hudson.model.Run;
-import hudson.model.TopLevelItem;
-import jenkins.model.Jenkins;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;

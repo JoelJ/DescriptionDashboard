@@ -175,13 +175,13 @@ public class Dashboard extends View {
 		}
 
 		Map<String, Map<String, Cell>> cellMap = new HashMap<String, Map<String, Cell>>();
-		Map<String, Project> projects = ProjectUtils.findProjects();
+		Map<String, AbstractProject> projects = ProjectUtils.findProjects();
 		for (Header jobHeader : jobs) {
 			long start = new Date().getTime();
 
 			int foundCount = 0;
 			String jobName = jobHeader.getName();
-			Project project = projects.get(jobName);
+			AbstractProject project = projects.get(jobName);
 			if (project == null) {
 				continue;
 			}
