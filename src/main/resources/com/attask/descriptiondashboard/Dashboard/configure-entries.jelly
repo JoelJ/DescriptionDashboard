@@ -52,6 +52,9 @@
 	<f:entry title="Description Pattern Group" field="descriptionPatternGroup">
 		<f:textbox/>
 	</f:entry>
+	<f:entry title="Category Pattern Groups" field="branchPatternGroups" default="0" description="Whitespace separated. Groups of the above Regex pattern that should be used to group the builds into different views.">
+		<f:textbox/>
+	</f:entry>
 	<f:entry title="Test Status Pattern" field="testStatusPattern">
 		<f:textbox/>
 	</f:entry>

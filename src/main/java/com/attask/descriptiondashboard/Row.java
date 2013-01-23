@@ -17,7 +17,7 @@ import java.util.*;
  * Time: 8:22 PM
  */
 @ExportedBean
-public class Row implements Serializable {
+public class Row implements Serializable, Comparable<Row> {
 	public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd hh:mm z", Locale.US);
 
 	private final String id;
@@ -330,5 +330,12 @@ public class Row implements Serializable {
 	@Override
 	public int hashCode() {
 		return this.getId() != null ? this.getId().hashCode() : 0;
+	}
+
+	public int compareTo(Row row2) {
+		if (row2 == null) {
+			return 1;
+		}
+		return row2.findDate().compareTo(this.findDate());
 	}
 }

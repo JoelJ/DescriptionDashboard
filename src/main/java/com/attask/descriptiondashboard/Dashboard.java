@@ -9,7 +9,6 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 import net.sf.json.util.CycleDetectionStrategy;
-import org.apache.commons.digester.Rules;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -35,6 +34,7 @@ public class Dashboard extends View {
 	private int count;
 	private String descriptionPattern;
 	private int descriptionPatternGroup;
+	private String branchPatternGroups;
 	private int orbSize;
 	private String customColumn;
 	private String testStatusPattern;
@@ -116,7 +116,7 @@ public class Dashboard extends View {
 		}
 
 		start = new Date().getTime();
-		Table fromCellMap = Table.createFromCellMap(count, jobs, cellMap, this.createCustomColumn(), this.getRules());
+		Table fromCellMap = Table.createFromCellMap(count, jobs, cellMap, this.createCustomColumn(), this.getRules(), this.descriptionPatternRegex, this.branchPatternGroups);
 		total = new Date().getTime() - start;
 		if(total > 1000) {
 			Logger.error("createFromCellMap took " + total + "ms");
@@ -331,6 +331,8 @@ public class Dashboard extends View {
 
 		String showCurrentUsernameParameter = request.getParameter("_.showCurrentUsername");
 		this.showCurrentUsername = "on".equals(showCurrentUsernameParameter);
+
+		this.branchPatternGroups = request.getParameter("_.branchPatternGroups");
 	}
 
 	@SuppressWarnings("UnusedDeclaration")
@@ -353,6 +355,7 @@ public class Dashboard extends View {
 		return "anonymous";
 	}
 
+	@SuppressWarnings("UnusedDeclaration")
 	public Set<SimpleUser> findUsersWithCustomImages() {
 		Set<SimpleUser> users = new HashSet<SimpleUser>();
 		for (User user : User.getAll()) {
@@ -389,16 +392,24 @@ public class Dashboard extends View {
 		return customColumn;
 	}
 
+	@SuppressWarnings("UnusedDeclaration")
 	public String getInjectTop() {
 		return injectTop;
 	}
 
+	@SuppressWarnings("UnusedDeclaration")
 	public String getInjectBottom() {
 		return injectBottom;
 	}
 
+	@SuppressWarnings("UnusedDeclaration")
 	public long getCacheTime() {
 		return cacheTime;
+	}
+
+	@Exported
+	public String getBranchPatternGroups() {
+		return branchPatternGroups;
 	}
 
 	@SuppressWarnings("UnusedDeclaration")
@@ -500,6 +511,7 @@ public class Dashboard extends View {
 		};
 	}
 
+	@SuppressWarnings("UnusedDeclaration")
 	public User getUser() {
 		return User.current();
 	}

@@ -5,6 +5,7 @@ import org.kohsuke.stapler.export.ExportedBean;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * User: Joel Johnson
@@ -17,7 +18,7 @@ public class Table implements Serializable {
 	private final List<Row> rows;
 	private transient final CustomColumn customColumn;
 
-	public static Table createFromCellMap(int maxRowCount, List<Header> jobs, Map<String, Map<String, Cell>> cellMap, CustomColumn customColumn, Collection<Rule> rules) {
+	public static Table createFromCellMap(int maxRowCount, List<Header> jobs, Map<String, Map<String, Cell>> cellMap, CustomColumn customColumn, Collection<Rule> rules, Pattern descriptionPattern, String branchGroups) {
 		List<Row> rows = new ArrayList<Row>();
 		for (Map.Entry<String, Map<String, Cell>> entry : cellMap.entrySet()) {
 			String rowID = entry.getKey();
@@ -28,20 +29,7 @@ public class Table implements Serializable {
 			rows.add(row);
 		}
 
-		Collections.sort(rows, new Comparator<Row>() {
-			public int compare(Row row1, Row row2) {
-				if (row1 == null) {
-					if (row2 == null) {
-						return 0;
-					}
-					return -1;
-				}
-				if (row2 == null) {
-					return 1;
-				}
-				return row2.findDate().compareTo(row1.findDate());
-			}
-		});
+		Collections.sort(rows);
 		if(rows.size() > maxRowCount) {
 			Logger.finer("rows.size() > maxRowCount... truncating. rows.size()="+rows.size() + "; maxRowCount="+maxRowCount);
 			rows = rows.subList(0, maxRowCount);
