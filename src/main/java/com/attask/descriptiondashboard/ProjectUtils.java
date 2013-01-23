@@ -1,5 +1,7 @@
 package com.attask.descriptiondashboard;
 
+import hudson.matrix.MatrixBuild;
+import hudson.matrix.MatrixRun;
 import hudson.model.*;
 import hudson.plugins.git.GitChangeSet;
 import hudson.scm.ChangeLogSet;
@@ -29,6 +31,32 @@ public class ProjectUtils {
 	}
 
 	public static int grepFailureCount(Run run, Pattern testStatusRegex, int testStatusGroup, int lines) {
+		if(run instanceof MatrixBuild) {
+			return grepFailureCountFromMatrix((MatrixBuild)run, testStatusRegex, testStatusGroup, lines);
+		} else {
+			return grepFailureCountFromBuild(run, testStatusRegex, testStatusGroup, lines);
+		}
+	}
+
+	private static int grepFailureCountFromMatrix(MatrixBuild build, Pattern testStatusRegex, int testStatusGroup, int lines) {
+		List<MatrixRun> runs = build.getRuns();
+
+		int total = 0;
+		boolean found = false;
+		for (MatrixRun matrixRun : runs) {
+			int failures = grepFailureCountFromBuild(matrixRun, testStatusRegex, testStatusGroup, lines);
+			if(failures > 0) { //-1 means there are no results, they shouldn't be added on.
+				total += failures;
+				found = true;
+			}
+		}
+		if(!found) {
+			return -1;
+		}
+		return total;
+	}
+
+	public static int grepFailureCountFromBuild(Run run, Pattern testStatusRegex, int testStatusGroup, int lines) {
 		List<String> log;
 		try {
 			//for some reason this gives me a warning in IntelliJ
