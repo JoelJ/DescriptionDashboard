@@ -3,7 +3,7 @@
 	${it.customColumn.beforeRow(it)}
 	<j:set var="requestId" value="${request.getParameterValues('id')}"/>
 	<j:set var="same" value="${it.idEquals(requestId)}"/>
-	<tr id="row-${it.id}" class="row ${it.passed ? 'passed' : ''} ${it.findCommitters()} ${same ? 'expanded' : ''}">
+	<tr id="row-${it.id}" class="row ${it.passed ? 'passed' : ''} ${it.findCommitters()} ${same ? 'expanded' : ''} ${it.expandExtraClasses()}">
 		<td class="customColumn">
 			<j:if test="${it.customColumn != null}">
 				<st:include it="${it.customColumn}" page="cell.jelly" />
@@ -26,7 +26,7 @@
 			</j:if>
 		</j:forEach>
 	</tr>
-	<tr id="extra-${it.id}" class="extra-details ${same ? '' : 'hidden'}">
+	<tr id="extra-${it.id}" class="extra-details ${same ? '' : 'hidden'} ${it.expandExtraClasses()}">
 		<td colspan="${it.findNumberVisibleColumns() + 2}">
 			<j:if test="${same}">
 				<st:include it="${it}" page="extras.jelly" />

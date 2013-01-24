@@ -32,8 +32,9 @@ public class Row implements Serializable, Comparable<Row> {
 	private final Date date;
 	private final String formattedDate;
 	private final Collection<Rule> rules;
+	private final Set<String> extraClasses;
 
-	public Row(String id, String description, Map<String, Cell> cells, List<Header> headers, CustomColumn customColumn, Collection<Rule> rules) {
+	public Row(String id, String description, Map<String, Cell> cells, List<Header> headers, CustomColumn customColumn, Collection<Rule> rules, Set<String> extraClasses) {
 		if(id == null) {
 			throw new IllegalArgumentException("id cannot be null");
 		}
@@ -96,6 +97,7 @@ public class Row implements Serializable, Comparable<Row> {
 
 		this.date = date;
 		this.formattedDate = SIMPLE_DATE_FORMAT.format(date);
+		this.extraClasses = extraClasses;
 	}
 
 	@Exported
@@ -263,6 +265,16 @@ public class Row implements Serializable, Comparable<Row> {
 	@Exported
 	public Collection<Rule> getRules() {
 		return rules;
+	}
+
+	@Exported
+	public Set<String> getExtraClasses() {
+		return extraClasses;
+	}
+
+	@SuppressWarnings("UnusedDeclaration")
+	public String expandExtraClasses() {
+		return Util.join(getExtraClasses(), " ");
 	}
 
 	public Collection<Rule> findMatchingRules() {
