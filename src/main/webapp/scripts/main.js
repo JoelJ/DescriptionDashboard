@@ -318,7 +318,6 @@ var DescriptionDashboard = {
 	},
 
 	filterList: function(newValue, previousValue) {
-		console.log('newValue', newValue);
 		if(newValue == undefined || newValue == null) {
 			return;
 		}
