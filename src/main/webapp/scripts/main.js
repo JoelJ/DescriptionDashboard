@@ -20,6 +20,7 @@ var DescriptionDashboard = {
 		}
 
 		$('DescriptionDashboard').observe('click', DescriptionDashboard.onRelayClick);
+		$('branchSelector').observe('change', DescriptionDashboard.onBranchSelectorChange);
 
 		$(document.body).observe('keyup', DescriptionDashboard.onKeyPressed);
 
@@ -114,6 +115,8 @@ var DescriptionDashboard = {
 
 		DescriptionDashboard.animatedImages = $$('.running img.status');
 		DescriptionDashboard.refreshHandle = setTimeout(DescriptionDashboard.enableAutoRefresh, 10000);
+
+		DescriptionDashboard.filterList(DescriptionDashboard.previouslySelectedBranch, "{all}");
 	},
 
 	onUpdateError: function(transport) {
@@ -300,5 +303,45 @@ var DescriptionDashboard = {
 		$$('.extra-details td').each(function(it) {
 			it.setAttribute('colspan', columnCount+2);
 		});
+	},
+
+	onBranchSelectorChange: function(event) {
+		var selectBox = event.target;
+
+		var newValue = selectBox[selectBox.selectedIndex].value;
+		var previousValue = DescriptionDashboard.previouslySelectedBranch == null || DescriptionDashboard == "{all}" ? "{all}" : DescriptionDashboard.previouslySelectedBranch;
+		DescriptionDashboard.previouslySelectedBranch = newValue;
+		console.log(event);
+
+		DescriptionDashboard.collapseAllRows();
+		DescriptionDashboard.filterList(newValue, previousValue);
+	},
+
+	filterList: function(newValue, previousValue) {
+		console.log('newValue', newValue);
+		if(newValue == undefined || newValue == null) {
+			return;
+		}
+
+		var rowSelector = "#DescriptionDashboard table tr[class~='row']";
+		var rowsToHideSelector = rowSelector;
+		if(previousValue != "{all}") {
+			rowsToHideSelector += "[class~='"+previousValue+"']";
+		}
+
+		var rowsToHide = $$(rowsToHideSelector);
+		for(var i = rowsToHide.length-1; i >= 0; i--) {
+			rowsToHide[i].addClassName('hidden');
+		}
+
+		var rowsToShowSelector = rowSelector;
+		if(newValue != "{all}") {
+			rowsToShowSelector += "[class~='"+newValue+"']";
+		}
+
+		var rowsToShow = $$(rowsToShowSelector);
+		for(var j = rowsToShow.length-1; j >= 0; j--) {
+			rowsToShow[j].removeClassName('hidden');
+		}
 	}
 };

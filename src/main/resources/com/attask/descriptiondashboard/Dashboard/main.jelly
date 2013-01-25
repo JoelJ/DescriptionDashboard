@@ -139,6 +139,15 @@
 	<div class="injectTop">
 		${it.injectTop}
 	</div>
+
+	<j:if test="${table.allBranches != null and !table.allBranches.isEmpty()}">
+		<select id="branchSelector">
+			<option value="{all}">-- All --</option>
+			<j:forEach var="branch" items="${table.allBranches}">
+				<option value="${branch}">${branch}</option>
+			</j:forEach>
+		</select>
+	</j:if>
 	<div id="DescriptionDashboard" class="${it.showCurrentUsername ? 'showCurrentUsername' : ''}">
 		<st:include it="${table}" page="render.jelly" />
 	</div>
