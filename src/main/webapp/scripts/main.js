@@ -12,11 +12,27 @@ var DescriptionDashboard = {
 			window.scrollBy(0,-50);
 		}
 
-		if(window.location.hash.indexOf('#showAll') >= 0) {
-			DescriptionDashboard.showAllColumns();
-		}
-		if(window.location.hash.indexOf('#fullScreen') >= 0) {
-			DescriptionDashboard.fillScreen();
+		var hashes = window.location.hash.split('#')
+		for(var i = hashes.length-1; i >= 0; i--) {
+			var hash = hashes[i];
+			if(hash == "fullScreen") {
+				DescriptionDashboard.fillScreen();
+			} else if(hash == "showAll") {
+				DescriptionDashboard.showAllColumns();
+			} else if(hash.startsWith("branch=")) {
+				var split = hash.split('=', 2);
+				var branch = split[1];
+				DescriptionDashboard.previouslySelectedBranch = branch;
+				DescriptionDashboard.filterList(branch, "{all}");
+				var select = $("branchSelector");
+				for(var optionIndex = select.options.length-1; optionIndex >= 0; optionIndex--) {
+					var option = select[optionIndex];
+					if(option.value == branch) {
+						select.selectedIndex = optionIndex;
+						break;
+					}
+				}
+			}
 		}
 
 		$('DescriptionDashboard').observe('click', DescriptionDashboard.onRelayClick);
