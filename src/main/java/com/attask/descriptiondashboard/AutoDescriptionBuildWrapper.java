@@ -28,6 +28,21 @@ public class AutoDescriptionBuildWrapper extends BuildWrapper {
 
 	@Override
 	public void preCheckout(AbstractBuild build, Launcher launcher, BuildListener listener) throws IOException, InterruptedException {
+		setDescription(build, listener);
+	}
+
+	@Override
+	public Environment setUp(AbstractBuild build, Launcher launcher, BuildListener listener) throws IOException, InterruptedException {
+		setDescription(build, listener);
+		return new Environment() {
+			@Override
+			public boolean tearDown(AbstractBuild build, BuildListener listener) throws IOException, InterruptedException {
+				return true;
+			}
+		};
+	}
+
+	private void setDescription(AbstractBuild build, BuildListener listener) throws IOException, InterruptedException {
 		if(this.useUpstreamDescription) {
 			@SuppressWarnings("unchecked")
 			Cause.UpstreamCause cause = (Cause.UpstreamCause) build.getCause(Cause.UpstreamCause.class);
@@ -35,22 +50,18 @@ public class AutoDescriptionBuildWrapper extends BuildWrapper {
 				Run upstreamBuild = findUpstreamBuild(cause);
 				String description = upstreamBuild == null ? "{ no upstream build }" : upstreamBuild.getDescription();
 				build.setDescription(description);
+				return;
 			}
-		} else {
+		}
+
+		if(description != null) {
+			//If we're not using Upstream Description OR there is no upstream job.
 			EnvVars environment = build.getEnvironment(listener);
 			String expanded = environment.expand(description);
-			build.setDescription(expanded);
-		}
-	}
-
-	@Override
-	public Environment setUp(AbstractBuild build, Launcher launcher, BuildListener listener) throws IOException, InterruptedException {
-		return new Environment() {
-			@Override
-			public boolean tearDown(AbstractBuild build, BuildListener listener) throws IOException, InterruptedException {
-				return true;
+			if(expanded != null && !expanded.isEmpty()) {
+				build.setDescription(expanded);
 			}
-		};
+		}
 	}
 
 	private Run findUpstreamBuild(Cause.UpstreamCause cause) {
