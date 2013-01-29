@@ -45,7 +45,8 @@ public class ProjectUtils {
 		boolean found = false;
 		for (MatrixRun matrixRun : runs) {
 			int failures = grepFailureCountFromBuild(matrixRun, testStatusRegex, testStatusGroup, lines);
-			if(failures > 0) { //-1 means there are no results, they shouldn't be added on.
+			if(failures >= 0) { //-1 means there are no results, they shouldn't be added on.
+				Logger.info("found " + failures + " failures on " + matrixRun.getParent().getDisplayName() + " " + matrixRun.getDisplayName());
 				total += failures;
 				found = true;
 			}
