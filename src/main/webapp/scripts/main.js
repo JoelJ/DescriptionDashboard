@@ -338,7 +338,7 @@ var DescriptionDashboard = {
 			return;
 		}
 
-		var rowSelector = "#DescriptionDashboard table tr[class~='row']";
+		var rowSelector = "#DescriptionDashboard table tr[class*='row']";
 		var rowsToHideSelector = rowSelector;
 		if(previousValue != "{all}") {
 			rowsToHideSelector += "[class~='"+previousValue+"']";
@@ -351,7 +351,7 @@ var DescriptionDashboard = {
 
 		var rowsToShowSelector = rowSelector;
 		if(newValue != "{all}") {
-			rowsToShowSelector += "[class~='"+newValue+"']";
+			rowsToShowSelector += "[class*='"+newValue+"']";
 		}
 
 		var rowsToShow = $$(rowsToShowSelector);
