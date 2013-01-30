@@ -289,7 +289,6 @@ var DescriptionDashboard = {
 		var links = $$('#DescriptionDashboard a');
 		links.each(function(link) {
 			link.setAttribute('target', '_blank');
-			console.log(link);
 		});
 
 		$('side-panel').hide();
@@ -327,13 +326,10 @@ var DescriptionDashboard = {
 		var newValue = selectBox[selectBox.selectedIndex].value;
 		var previousValue = DescriptionDashboard.previouslySelectedBranch == null || DescriptionDashboard == "{all}" ? "{all}" : DescriptionDashboard.previouslySelectedBranch;
 		DescriptionDashboard.previouslySelectedBranch = newValue;
-		console.log(event);
 
 		DescriptionDashboard.collapseAllRows();
 		DescriptionDashboard.filterList(newValue, previousValue);
         if(window.location.hash.indexOf("branch=") > 0) {
-            console.log(previousValue);
-            console.log(new RegExp('#branch=' + previousValue + '(?=(#|$))'));
             window.location.hash = window.location.hash.replace(new RegExp('#branch='+previousValue+'(?=(#|$))'), '#branch='+newValue);
         } else {
             window.location.hash = "branch="+newValue;
