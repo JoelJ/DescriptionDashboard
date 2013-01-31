@@ -12,6 +12,12 @@ var DescriptionDashboard = {
 			window.scrollBy(0,-50);
 		}
 
+		DescriptionDashboard.defaultFilter = "DescriptionDashboard.defaultFilter";
+		var filterCookie = readCookie(DescriptionDashboard.defaultFilter);
+		if(filterCookie) {
+			DescriptionDashboard.loadDefaultFilter(filterCookie);
+		}
+
 		var hashes = window.location.hash.split('#')
 		for(var i = hashes.length-1; i >= 0; i--) {
 			var hash = hashes[i];
@@ -22,16 +28,7 @@ var DescriptionDashboard = {
 			} else if(hash.startsWith("branch=")) {
 				var split = hash.split('=', 2);
 				var branch = split[1];
-				DescriptionDashboard.previouslySelectedBranch = branch;
-				DescriptionDashboard.filterList(branch, "{all}");
-				var select = $("branchSelector");
-				for(var optionIndex = select.options.length-1; optionIndex >= 0; optionIndex--) {
-					var option = select[optionIndex];
-					if(option.value == branch) {
-						select.selectedIndex = optionIndex;
-						break;
-					}
-				}
+				DescriptionDashboard.loadDefaultFilter(branch);
 			}
 		}
 
@@ -44,6 +41,19 @@ var DescriptionDashboard = {
 		DescriptionDashboard.animateInterval = 0.1;
 		DescriptionDashboard.currentAnimation = 0.4;
 		DescriptionDashboard.animateOrbs();
+	},
+
+	loadDefaultFilter: function(branch) {
+		var select = $("branchSelector");
+		for(var optionIndex = select.options.length-1; optionIndex >= 0; optionIndex--) {
+			var option = select[optionIndex];
+			if(option.value == branch) {
+				DescriptionDashboard.previouslySelectedBranch = branch;
+				DescriptionDashboard.filterList(branch, "{all}");
+				select.selectedIndex = optionIndex;
+				break;
+			}
+		}
 	},
 
 	animateOrbs: function() {
@@ -362,5 +372,7 @@ var DescriptionDashboard = {
 		for(var j = rowsToShow.length-1; j >= 0; j--) {
 			rowsToShow[j].removeClassName('hidden');
 		}
+
+		createCookie(DescriptionDashboard.defaultFilter, newValue);
 	}
 };
