@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
  */
 public class ProjectUtils {
 	public static int getFailureCount(Run run) {
-		if(run.getResult() == Result.SUCCESS || run.getResult() == Result.UNSTABLE) {
+		if(!run.hasntStartedYet() && (run.getResult() == Result.SUCCESS || run.getResult() == Result.UNSTABLE)) {
 			AbstractTestResultAction testResultAction = run.getAction(AbstractTestResultAction.class);
 			if(testResultAction != null) {
 				return testResultAction.getFailCount();
@@ -31,11 +31,14 @@ public class ProjectUtils {
 	}
 
 	public static int grepFailureCount(Run run, Pattern testStatusRegex, int testStatusGroup, int lines) {
-		if(run instanceof MatrixBuild) {
-			return grepFailureCountFromMatrix((MatrixBuild)run, testStatusRegex, testStatusGroup, lines);
-		} else {
-			return grepFailureCountFromBuild(run, testStatusRegex, testStatusGroup, lines);
+		if(!run.hasntStartedYet()) {
+			if(run instanceof MatrixBuild) {
+				return grepFailureCountFromMatrix((MatrixBuild)run, testStatusRegex, testStatusGroup, lines);
+			} else {
+				return grepFailureCountFromBuild(run, testStatusRegex, testStatusGroup, lines);
+			}
 		}
+		return -1;
 	}
 
 	private static int grepFailureCountFromMatrix(MatrixBuild build, Pattern testStatusRegex, int testStatusGroup, int lines) {
