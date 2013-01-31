@@ -1,5 +1,5 @@
 var DescriptionDashboard = {
-	init: function() {
+	init: function(cookieName) {
 		DescriptionDashboard.hackGreenRow();
 
 		if(window.location.search.indexOf('disableAutoRefresh=true') == -1) {
@@ -12,7 +12,7 @@ var DescriptionDashboard = {
 			window.scrollBy(0,-50);
 		}
 
-		DescriptionDashboard.defaultFilter = "DescriptionDashboard.defaultFilter";
+		DescriptionDashboard.defaultFilter = cookieName;
 		var filterCookie = readCookie(DescriptionDashboard.defaultFilter);
 		if(filterCookie) {
 			DescriptionDashboard.loadDefaultFilter(filterCookie);

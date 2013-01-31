@@ -412,6 +412,10 @@ public class Dashboard extends View {
 		return branchPatternGroups;
 	}
 
+	public String getName() {
+		return name;
+	}
+
 	@SuppressWarnings("UnusedDeclaration")
 	public CustomColumn createCustomColumn()  {
 		if(customColumnCached != null) {
