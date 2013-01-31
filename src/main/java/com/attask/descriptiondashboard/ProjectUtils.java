@@ -44,11 +44,18 @@ public class ProjectUtils {
 		int total = 0;
 		boolean found = false;
 		for (MatrixRun matrixRun : runs) {
-			int failures = grepFailureCountFromBuild(matrixRun, testStatusRegex, testStatusGroup, lines);
-			if(failures >= 0) { //-1 means there are no results, they shouldn't be added on.
-				Logger.info("found " + failures + " failures on " + build.getExternalizableId() + " " +matrixRun.getExternalizableId());
-				total += failures;
-				found = true;
+			if(!matrixRun.hasntStartedYet()) {
+				if(matrixRun.isBuilding()) {
+					int failures = grepFailureCountFromBuild(matrixRun, testStatusRegex, testStatusGroup, lines);
+					if(failures >= 0) { //-1 means there are no results, they shouldn't be added on.
+						Logger.info("found " + failures + " failures on " + build.getExternalizableId() + " " +matrixRun.getExternalizableId());
+						total += failures;
+						Logger.info("\tTotal: " + total);
+						found = true;
+					}
+				} else {
+					total += getFailureCount(matrixRun);
+				}
 			}
 		}
 		if(!found) {
