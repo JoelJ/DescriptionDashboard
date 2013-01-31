@@ -46,7 +46,7 @@ public class ProjectUtils {
 		for (MatrixRun matrixRun : runs) {
 			int failures = grepFailureCountFromBuild(matrixRun, testStatusRegex, testStatusGroup, lines);
 			if(failures >= 0) { //-1 means there are no results, they shouldn't be added on.
-				Logger.info("found " + failures + " failures on " + matrixRun.getParent().getDisplayName() + " " + matrixRun.getDisplayName());
+				Logger.info("found " + failures + " failures on " + build.getExternalizableId() + " " +matrixRun.getExternalizableId());
 				total += failures;
 				found = true;
 			}
@@ -72,6 +72,7 @@ public class ProjectUtils {
 			Matcher matcher = testStatusRegex.matcher(line);
 			if(matcher.find()) {
 				String result = matcher.group(testStatusGroup);
+				Logger.info("Found match: " + line + ". " + result);
 				return Integer.parseInt(result);
 			}
 		}
