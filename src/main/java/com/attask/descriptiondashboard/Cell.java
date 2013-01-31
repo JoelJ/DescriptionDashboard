@@ -34,15 +34,15 @@ public class Cell implements Serializable {
 		String name = build.getFullDisplayName();
 		boolean running = build.isBuilding();
 
-		int failureCount;
+		final int failureCount;
 		Result result;
 		if(running && testStatusRegex != null) {
 			failureCount = ProjectUtils.grepFailureCount(build, testStatusRegex, testStatusGroup, logLinesToSearch);
-			if(failureCount == -1) {
+			if(failureCount < 0) {
 				result = Result.NOT_BUILT;
 			} else if(failureCount == 0) {
 				result = Result.SUCCESS;
-			} else {
+			} else { // > 0
 				result = Result.UNSTABLE;
 			}
 		} else {
