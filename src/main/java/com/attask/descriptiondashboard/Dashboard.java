@@ -19,6 +19,7 @@ import org.kohsuke.stapler.export.ExportedBean;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,6 +46,8 @@ public class Dashboard extends View {
 	private int maxAge;
 	private List<Rule> rules;
 	private boolean showCurrentUsername;
+
+	private transient WeakReference<Set<TopLevelItem>> items;
 
 	private transient Pattern descriptionPatternRegex;
 	private transient Table table;
@@ -252,6 +255,8 @@ public class Dashboard extends View {
 
 	@Override
 	protected void submit(StaplerRequest request) throws IOException, ServletException, Descriptor.FormException {
+		this.items = null;
+
 		String jobs = request.getParameter("_.jobs");
 		this.jobs = createArrayList();
 
@@ -489,12 +494,24 @@ public class Dashboard extends View {
 
 	@Override
 	public Collection<TopLevelItem> getItems() {
-		return Collections.emptyList();
+		if(items == null || items.get() == null) {
+			//Not synchronizing or anything here because it's not a huge problem if we generate this list more than once
+			Set<TopLevelItem> items = new HashSet<TopLevelItem>();
+			for (Header job : jobs) {
+				AbstractProject project = ProjectUtils.findProject(job.getName());
+				if(project instanceof TopLevelItem) {
+					items.add((TopLevelItem) project);
+				}
+			}
+
+			this.items = new WeakReference<Set<TopLevelItem>>(items);
+		}
+		return items.get();
 	}
 
 	@Override
 	public boolean contains(TopLevelItem item) {
-		return false;
+		return getItems().contains(item);
 	}
 
 	@Override
