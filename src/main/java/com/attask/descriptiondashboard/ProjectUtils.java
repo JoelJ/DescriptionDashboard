@@ -58,8 +58,9 @@ public class ProjectUtils {
 					}
 				} else {
 					int failureCount = getFailureCount(matrixRun);
-					if(failureCount > 0) {
+					if(failureCount >= 0) {
 						total += failureCount;
+						found = true;
 					}
 				}
 			}
