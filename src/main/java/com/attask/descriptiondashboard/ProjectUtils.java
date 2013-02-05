@@ -47,7 +47,7 @@ public class ProjectUtils {
 		int total = 0;
 		boolean found = false;
 		for (MatrixRun matrixRun : runs) {
-			if(!matrixRun.hasntStartedYet()) {
+			if(!matrixRun.hasntStartedYet() && matrixRun.getNumber() == build.getNumber()) {
 				if(matrixRun.isBuilding()) {
 					int failures = grepFailureCountFromBuild(matrixRun, testStatusRegex, testStatusGroup, lines);
 					if(failures >= 0) { //-1 means there are no results, they shouldn't be added on.
@@ -63,6 +63,8 @@ public class ProjectUtils {
 						found = true;
 					}
 				}
+			} else {
+				Logger.info("Matrix run hasn't finished. slice: " + matrixRun.getNumber() + ". build: " + build.getNumber());
 			}
 		}
 		if(!found) {
