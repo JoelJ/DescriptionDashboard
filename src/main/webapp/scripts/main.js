@@ -228,7 +228,7 @@ var DescriptionDashboard = {
 				evalJS: 'false',
 				onSuccess: function(transport) {
 					var resultBody = transport.responseText;
-					resultBody = DescriptionDashboard.onDrawerRendered(resultBody);
+					resultBody = DescriptionDashboard.onDrawerRendered(resultBody, rowId);
 					extra.down('td').innerHTML = resultBody;
 					$(document.body).removeClassName('loading');
 				},
@@ -241,7 +241,7 @@ var DescriptionDashboard = {
 		}
 	},
 
-	onDrawerRendered: function(html) {
+	onDrawerRendered: function(html, rowId) {
 		return html;
 	},
 
