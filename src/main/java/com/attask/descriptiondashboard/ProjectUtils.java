@@ -51,9 +51,9 @@ public class ProjectUtils {
 				if(matrixRun.isBuilding()) {
 					int failures = grepFailureCountFromBuild(matrixRun, testStatusRegex, testStatusGroup, lines);
 					if(failures >= 0) { //-1 means there are no results, they shouldn't be added on.
-						Logger.info("found " + failures + " failures on " + build.getExternalizableId() + " " +matrixRun.getExternalizableId());
+						Logger.finest("found " + failures + " failures on " + build.getExternalizableId() + " " +matrixRun.getExternalizableId());
 						total += failures;
-						Logger.info("\tTotal: " + total);
+						Logger.finest("\tTotal: " + total);
 						found = true;
 					}
 				} else {
@@ -64,7 +64,7 @@ public class ProjectUtils {
 					}
 				}
 			} else {
-				Logger.info("Matrix run hasn't finished. slice: " + matrixRun.getNumber() + ". build: " + build.getNumber());
+				Logger.finest("Matrix run hasn't finished. slice: " + matrixRun.getNumber() + ". build: " + build.getNumber());
 			}
 		}
 		if(!found) {
@@ -88,7 +88,7 @@ public class ProjectUtils {
 			Matcher matcher = testStatusRegex.matcher(line);
 			if(matcher.find()) {
 				String result = matcher.group(testStatusGroup);
-				Logger.info("Found match: " + line + ". " + result);
+				Logger.finest("Found match: " + line + ". " + result);
 				return Integer.parseInt(result);
 			}
 		}
