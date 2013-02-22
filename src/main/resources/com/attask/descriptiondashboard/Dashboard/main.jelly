@@ -156,6 +156,7 @@
 	</div>
 
 	<script src="${rootURL}/plugin/DescriptionDashboard/scripts/cookies.js"><!--empty--></script>
+	<script src="${rootURL}/plugin/DescriptionDashboard/scripts/timezone.js"><!--empty--></script>
 	<script src="${rootURL}/plugin/DescriptionDashboard/scripts/main.js"><!--empty--></script>
 	<script>DescriptionDashboard.init('DescriptionDashboard.filter.${it.name}')</script>
 </j:jelly>
