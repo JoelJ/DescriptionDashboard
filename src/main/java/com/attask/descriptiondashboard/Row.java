@@ -3,9 +3,12 @@ package com.attask.descriptiondashboard;
 import hudson.Util;
 import hudson.model.AbstractProject;
 import hudson.model.Run;
+import org.kohsuke.stapler.Stapler;
+import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
 
+import javax.servlet.http.Cookie;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -19,6 +22,9 @@ import java.util.*;
 @ExportedBean
 public class Row implements Serializable, Comparable<Row> {
 	public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd hh:mm z", Locale.US);
+	static {
+		SIMPLE_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
+	}
 
 	private final String id;
 	private final String description;
@@ -153,7 +159,32 @@ public class Row implements Serializable, Comparable<Row> {
 
 	@SuppressWarnings("UnusedDeclaration")
 	public String findDateFormatted() {
-		return formattedDate;
+		StaplerRequest currentRequest = Stapler.getCurrentRequest();
+		if(currentRequest == null) {
+			return formattedDate;
+		}
+
+		Cookie[] cookies = currentRequest.getCookies();
+		String timezone = null;
+		for (Cookie cookie : cookies) {
+			if("timezone".equals(cookie.getName())) {
+				String timezoneCookieValue = cookie.getValue();
+				if(!timezoneCookieValue.startsWith("-")) {
+					timezoneCookieValue = "+" + timezoneCookieValue;
+				}
+				timezone = "GMT" + timezoneCookieValue + ":00";
+			}
+		}
+
+		if(timezone == null) {
+			//No Cookie
+			return formattedDate;
+		}
+
+		SimpleDateFormat simpleDateFormat = (SimpleDateFormat) SIMPLE_DATE_FORMAT.clone();
+		simpleDateFormat.setTimeZone(TimeZone.getTimeZone(timezone));
+		String formattedDate = simpleDateFormat.format(date);
+		return formattedDate.replace("GMT", "(").concat(")");
 	}
 
 	@SuppressWarnings("UnusedDeclaration")
