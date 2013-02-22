@@ -21,7 +21,7 @@ import java.util.*;
  */
 @ExportedBean
 public class Row implements Serializable, Comparable<Row> {
-	public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd hh:mm z", Locale.US);
+	public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm z", Locale.US);
 	static {
 		SIMPLE_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
 	}
