@@ -157,6 +157,10 @@ public class Row implements Serializable, Comparable<Row> {
 		return date;
 	}
 
+	public String getDateFormatted() {
+		return findDateFormatted();
+	}
+
 	@SuppressWarnings("UnusedDeclaration")
 	public String findDateFormatted() {
 		StaplerRequest currentRequest = Stapler.getCurrentRequest();
