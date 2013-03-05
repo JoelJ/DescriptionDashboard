@@ -170,4 +170,17 @@ public class ProjectUtils {
 
 		return false;
 	}
+
+	public static Result getWorstChildResult(MatrixBuild build) {
+		Result worstResult = Result.SUCCESS;
+		if(build != null) {
+			for (MatrixRun matrixRun : build.getRuns()) {
+				if(!matrixRun.isBuilding() && matrixRun.getNumber() == build.getNumber()) {
+					Result matrixRunResult = matrixRun.getResult();
+					worstResult = worstResult.isBetterThan(matrixRunResult) ? matrixRunResult : worstResult;
+				}
+			}
+		}
+		return worstResult;
+	}
 }

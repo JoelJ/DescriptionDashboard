@@ -1,5 +1,6 @@
 package com.attask.descriptiondashboard;
 
+import hudson.matrix.MatrixBuild;
 import hudson.model.Result;
 import hudson.model.Run;
 import org.kohsuke.stapler.export.Exported;
@@ -34,16 +35,25 @@ public class Cell implements Serializable {
 		String name = build.getFullDisplayName();
 		boolean running = build.isBuilding();
 
-		final int failureCount;
-		Result result;
+		int failureCount = -1;
+		Result result = null;
 		if(running && testStatusRegex != null) {
-			failureCount = ProjectUtils.grepFailureCount(build, testStatusRegex, testStatusGroup, logLinesToSearch);
-			if(failureCount < 0) {
-				result = Result.NOT_BUILT;
-			} else if(failureCount == 0) {
-				result = Result.SUCCESS;
-			} else { // > 0
-				result = Result.UNSTABLE;
+			if(build instanceof MatrixBuild) {
+				//If a child matrix job has failed, don't waste our time with anything else.
+				Result worstChildResult = ProjectUtils.getWorstChildResult((MatrixBuild)build);
+				if(worstChildResult.isWorseOrEqualTo(Result.FAILURE)) {
+					result = worstChildResult;
+				}
+			}
+			if(result == null || result.isBetterThan(Result.FAILURE)) {
+				failureCount = ProjectUtils.grepFailureCount(build, testStatusRegex, testStatusGroup, logLinesToSearch);
+				if(failureCount < 0) {
+					result = Result.NOT_BUILT;
+				} else if(failureCount == 0) {
+					result = Result.SUCCESS;
+				} else { // > 0
+					result = Result.UNSTABLE;
+				}
 			}
 		} else {
 			failureCount = ProjectUtils.getFailureCount(build);
