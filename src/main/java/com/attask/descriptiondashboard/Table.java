@@ -22,7 +22,7 @@ public class Table implements Serializable {
 
 	public static Table createFromCellMap(int maxRowCount, List<Header> jobs, Map<String, Map<String, Cell>> cellMap, CustomColumn customColumn, Collection<Rule> rules, Pattern descriptionPattern, String branchGroups) {
 		List<Row> rows = new ArrayList<Row>();
-		Set<String> allBranches = new HashSet<String>();
+		Set<String> allBranches = new TreeSet<String>();
 
 		for (Map.Entry<String, Map<String, Cell>> entry : cellMap.entrySet()) {
 			String rowID = entry.getKey();
