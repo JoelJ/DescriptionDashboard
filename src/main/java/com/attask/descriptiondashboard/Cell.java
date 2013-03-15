@@ -29,6 +29,7 @@ public class Cell implements Serializable {
 	private final Set<SimpleUser> committers;
 	private final boolean visible;
 	private final boolean critical;
+    private final long duration;
 
 	public static Cell createFromBuild(Run build, boolean visible, Pattern testStatusRegex, int testStatusGroup, int logLinesToSearch, int maxAge) {
 		String description = build.getDescription();
@@ -62,10 +63,10 @@ public class Cell implements Serializable {
 		String resultString = result == null ? "RUNNING" : result.toString();
 		Set<SimpleUser> committers = ProjectUtils.findCommitters(build);
 		boolean critical = false;//ProjectUtils.hasAgeOver(build, maxAge);
-		return new Cell(name, failureCount, resultString, description, build.getTime(), build.getParent().getName(), build.getNumber(), running, committers, visible, critical);
+		return new Cell(name, failureCount, resultString, description, build.getTime(), build.getParent().getName(), build.getNumber(), running, committers, visible, critical, build.getDuration());
 	}
 
-	private Cell(String name, int failures, String result, String description, Date date, String projectName, int buildNumber, boolean running, Set<SimpleUser> committers, boolean visible, boolean critical) {
+	private Cell(String name, int failures, String result, String description, Date date, String projectName, int buildNumber, boolean running, Set<SimpleUser> committers, boolean visible, boolean critical, long duration) {
 		this.name = name;
 		this.failures = failures;
 		this.result = result;
@@ -77,6 +78,7 @@ public class Cell implements Serializable {
 		this.committers = committers;
 		this.visible = visible;
 		this.critical = critical;
+        this.duration = duration;
 	}
 
 	@Exported
@@ -138,6 +140,11 @@ public class Cell implements Serializable {
 	public boolean getCritical() {
 		return critical;
 	}
+
+    @Exported
+    public long getDuration() {
+        return duration;
+    }
 
 	@Override
 	public String toString() {
