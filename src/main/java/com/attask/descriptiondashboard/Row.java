@@ -170,13 +170,15 @@ public class Row implements Serializable, Comparable<Row> {
 
 		Cookie[] cookies = currentRequest.getCookies();
 		String timezone = null;
-		for (Cookie cookie : cookies) {
-			if("timezone".equals(cookie.getName())) {
-				String timezoneCookieValue = cookie.getValue();
-				if(!timezoneCookieValue.startsWith("-")) {
-					timezoneCookieValue = "+" + timezoneCookieValue;
+		if(cookies != null) {
+			for (Cookie cookie : cookies) {
+				if("timezone".equals(cookie.getName())) {
+					String timezoneCookieValue = cookie.getValue();
+					if(!timezoneCookieValue.startsWith("-")) {
+						timezoneCookieValue = "+" + timezoneCookieValue;
+					}
+					timezone = "GMT" + timezoneCookieValue + ":00";
 				}
-				timezone = "GMT" + timezoneCookieValue + ":00";
 			}
 		}
 
