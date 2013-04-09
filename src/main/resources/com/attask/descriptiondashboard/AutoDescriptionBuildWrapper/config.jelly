@@ -1,8 +1,16 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
 		 xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+	<f:entry title="Job Name" field="jobName">
+		<f:textbox/>
+	</f:entry>
+	<f:entry title="Build Number" field="buildNumber">
+		<f:textbox/>
+	</f:entry>
+
 	<f:entry title="Use Upstream Build's Description" field="useUpstreamDescription">
 		<f:checkbox/>
 	</f:entry>
+
 	<f:entry title="Custom Description" field="description">
 		<f:textarea/>
 	</f:entry>

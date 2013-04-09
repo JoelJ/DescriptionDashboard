@@ -19,11 +19,15 @@ import java.io.IOException;
 public class AutoDescriptionBuildWrapper extends BuildWrapper {
 	private final boolean useUpstreamDescription;
 	private final String description;
+	private final String jobName;
+	private final String buildNumber;
 
 	@DataBoundConstructor
-	public AutoDescriptionBuildWrapper(boolean useUpstreamDescription, String description) {
+	public AutoDescriptionBuildWrapper(boolean useUpstreamDescription, String description, String jobName, String buildNumber) {
 		this.useUpstreamDescription = useUpstreamDescription;
 		this.description = description;
+		this.jobName = jobName;
+		this.buildNumber = buildNumber;
 	}
 
 	@Override
@@ -43,6 +47,18 @@ public class AutoDescriptionBuildWrapper extends BuildWrapper {
 	}
 
 	private void setDescription(AbstractBuild build, BuildListener listener) throws IOException, InterruptedException {
+		EnvVars environment = build.getEnvironment(listener);
+
+		if(getJobName() != null && !getJobName().isEmpty() && getBuildNumber() != null && !getBuildNumber().isEmpty()) {
+			String jobNameExpanded = environment.expand(getJobName());
+			String buildNumberExpandedStr = environment.expand(getBuildNumber());
+			int buildNumberExpanded = Integer.parseInt(buildNumberExpandedStr);
+			Run foundBuild = ProjectUtils.findBuild(jobNameExpanded, buildNumberExpanded);
+			String description = foundBuild.getDescription();
+			build.setDescription(description);
+			return;
+		}
+
 		if(this.useUpstreamDescription) {
 			@SuppressWarnings("unchecked")
 			Cause.UpstreamCause cause = (Cause.UpstreamCause) build.getCause(Cause.UpstreamCause.class);
@@ -56,7 +72,6 @@ public class AutoDescriptionBuildWrapper extends BuildWrapper {
 
 		if(description != null) {
 			//If we're not using Upstream Description OR there is no upstream job.
-			EnvVars environment = build.getEnvironment(listener);
 			String expanded = environment.expand(description);
 			if(expanded != null && !expanded.isEmpty()) {
 				build.setDescription(expanded);
@@ -82,6 +97,16 @@ public class AutoDescriptionBuildWrapper extends BuildWrapper {
 	@Exported
 	public String getDescription() {
 		return description;
+	}
+
+	@Exported
+	public String getJobName() {
+		return jobName;
+	}
+
+	@Exported
+	public String getBuildNumber() {
+		return buildNumber;
 	}
 
 	@Extension

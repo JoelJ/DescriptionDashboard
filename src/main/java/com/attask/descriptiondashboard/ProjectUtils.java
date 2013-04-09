@@ -183,4 +183,13 @@ public class ProjectUtils {
 		}
 		return worstResult;
 	}
+
+	public static Run findBuild(String jobName, int buildNumber) {
+		AbstractProject project = findProject(jobName);
+		if(project == null) {
+			return null;
+		}
+
+		return project.getBuildByNumber(buildNumber);
+	}
 }
