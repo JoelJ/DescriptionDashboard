@@ -2,6 +2,7 @@ package com.attask.descriptiondashboard;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 
+import java.util.Collection;
 import java.util.Collections;
 
 /**
@@ -18,7 +19,7 @@ public class ErrorTable extends Table {
 	}
 
 	private ErrorTable(String message, Throwable throwable) {
-		super(Collections.<Header>emptyList(), Collections.<Row>emptyList(), null);
+		super(Collections.<Header>emptyList(), Collections.<Row>emptyList(), null, Collections.<String>emptySet());
 		this.message = message;
 		this.throwable = throwable;
 	}
